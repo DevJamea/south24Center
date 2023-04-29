@@ -1,0 +1,71 @@
+{
+    "noRouteFound": "noRouteFound",
+    "home": "Home",
+    "analytics": "Analytics",
+    "reports": "Rreports",
+    "breakingNews": "Breaking News",
+    "publications": "Publications",
+    "south24TV": "South24 TV",
+    "south24Quarterly": "South24 Quarterly",
+    "about": "About",
+    "language": "عربي",
+    "editorial": "Editorial",
+    "specialReports": "SpecialReports",
+    "international": "International",
+    "arabic": "Arabic",
+    "dialogues": "Dialogues",
+    "subPublications": "Publications",
+    "infographics":"infographics",
+    "studies" : "Studies",
+    "breaking": "Breaking News",
+    "etryAgain" : "Retry Again",
+    "loading" : "Loading...",
+    "noData" : "No matching results",
+    "noInternet" : "No Internet Connection",
+
+    "aboutUs" : "About Us",
+    "about0":"Our goals:",
+    "about1":"South24 Center for News and Studies",
+    "about2":"South24 Center For News and Studies is an independent media and research institution which has sought, since founded in September 2019 (in Switzerland), to provide instant and comprehensive coverage for most prominent news, political and strategic opinions, studies and researches produced locally, regionally and internationally that address issues and files related to South Yemen. Moreover, South24’s coverage includes those issues relevant with the strategic conflicts of the Arab Peninsula, the Middle East and the Horn of Africa.",
+    "about3":"South24 adopts high-accuracy criteria as well as a professional journalistic approach that relies upon trusted sources, influential views, strategic studies and opinions provided by a group of experts and specialists. We aim at examining and checking all narrations and views related to the situation in South Yemen, as well as presenting a deep, objective, coherent and accurate approach. Thus, we could reveal the secrets and the backstages of events, situations and developments as well as solving its surrounding complexities. This makes it easier for the local and external decision makers and all interested parties to enjoy comprehensive and accurate detailed coverage.",
+    "about4":"Accordingly, within a short period, “South24” has been able to develop the quantity and the quality of its media and research products to become one of the reliable sources on all the events and developments in South Yemen. In order to constantly retain such an end, “South24” seeks for making more improvement and development, as well as providing the readers with new media material and comprehensive research projects.",
+    "about5":"Furthermore, after opening its Aden’s Office, South24 seeks for effectively contribute in raising the efficiency of local cadres with regard to the production of professional media materials, in addition to preparing competent researchers through training courses in partnership with local and international institutions, and providing them with opportunities to enhance and develop their theoretical knowledge and practical experience.",
+    "about6":"To provide professional and analytical news coverage of various developments related to the emergent and historical issues in South and the relevant matters within the Middle East, Gulf of Aden, Bab al-Mandab and Horn of Africa.",
+    "about7":"We keen to highlight various influential views that are able to change the course of events in the region.",
+    "about8":"To follow up opinions of top analysts, experts, decision makers, research centers and media outlets around the world.",
+    "about9":"To highlight valorous views based upon a culture of criticism, analysis and solution finding in an atypical approach which breaks the stereotype of politicized media.",
+    "about10":"To present opinions, ideas and studies in a way that benefits decision makers and relevant bodies determining the political fate of our region.",
+    "about11":"Throughout our coverage, we are keen to promote the values of individual freedom, the other opinion, human rights and women’s rights.",
+    "about12":"We focus on analyzing and studying various crises and wars as well as covering events related to combating terrorism, extremism and human trafficking in addition to immigrant issues.",
+    "directors":"Board of Directors",
+    "editorialTeam":"Editorial Team",
+    "correspondents":"Correspondents",
+    "consultants":"Board of Consultants",
+    "researchersAndExperts":"researchers and Experts",
+
+    "author":"Author:",
+    "publishDate":"Date of Publication:",
+
+    "view":"View PDF",
+    "download":"Download PDF",
+
+    "ok":"Ok",
+    "latestRelease":"Latest Release",
+
+    "headOffice":"Head Office",
+    "switzerland":"Switzerland",
+
+    "days":"Days",
+    "hours":"Hours",
+    "minutes":"Minutes",
+    "lessThanMinute":"less than a minute",
+    "posted":"Posted",
+    "ago":"Ago",
+
+    "seeAll":"See All",
+
+    "search":"Search ...",
+    "searchWord":"search"
+ 
+  }
+  
