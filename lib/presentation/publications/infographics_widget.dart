@@ -10,8 +10,11 @@ import 'package:south24/presentation/resources/styles_manager.dart';
 import 'package:south24/presentation/resources/values_manager.dart';
 
 class InfographicsWidget extends StatelessWidget {
-  const InfographicsWidget({Key? key, required this.infographics})
-      : super(key: key);
+  const InfographicsWidget({
+    Key? key,
+    required this.infographics,
+  }) : super(key: key);
+
   final Infographics infographics;
 
   @override
@@ -19,19 +22,20 @@ class InfographicsWidget extends StatelessWidget {
     final Size screenSize = MediaQuery.of(context).size;
     final bool isPortrait = screenSize.height > screenSize.width;
     final double aspectRatio = isPortrait ? 1.5 : 0.75;
-
     final double height = screenSize.height / 2;
     final double width = screenSize.width / 2 - AppSize.s8;
 
-    final TextStyle textStyle =
-        getMediumStyle(color: ColorManager.black, fontSize: FontSizeManager.s14);
+    final TextStyle textStyle = getMediumStyle(
+      color: ColorManager.black,
+      fontSize: FontSizeManager.s14,
+    );
 
     return InkWell(
       onTap: () {
         Navigator.pushNamed(
           context,
           Routes.FullscreenImageRoute,
-          arguments: infographics.infogImg, 
+          arguments: infographics.infogImg,
         );
       },
       child: SizedBox(

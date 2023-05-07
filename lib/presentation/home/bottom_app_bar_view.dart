@@ -9,9 +9,9 @@ import 'package:south24/presentation/resources/values_manager.dart';
 
 class SouthBottomAppBar extends StatelessWidget {
   const SouthBottomAppBar({
-    super.key,
+    Key? key,
     required this.size,
-  });
+  }) : super(key: key);
 
   final Size size;
 
@@ -45,17 +45,17 @@ class SouthBottomAppBar extends StatelessWidget {
                         EdgeInsets.symmetric(horizontal: AppPadding.p12),
                     child: CarouselSlider(
                       options: CarouselOptions(
-                          autoPlayInterval: Duration(seconds: 3),
-                          autoPlayAnimationDuration: Duration(seconds: 2),
-                          autoPlayCurve: Curves.easeInOutExpo,
-                          autoPlay: true,
-                          viewportFraction: 1),
-                      items: provider.twitter.where((tweet) => tweet.hours! < 2).map((i) {
+                        autoPlayInterval: Duration(seconds: 3),
+                        autoPlayAnimationDuration: Duration(seconds: 2),
+                        autoPlayCurve: Curves.easeInOutExpo,
+                        autoPlay: true,
+                        viewportFraction: 1),
+                      items: provider.twitter.where((tweet) => tweet.hours! < 2).map((tweet) {
                         return Text(
-                              i.twtTxt!,
-                              style: Theme.of(context).textTheme.bodyLarge,
-                            );
-                      }).toList() 
+                          tweet.twtTxt!,
+                          style: Theme.of(context).textTheme.bodyLarge,
+                        );
+                      }).toList(),
                     ),
                   ),
                 )

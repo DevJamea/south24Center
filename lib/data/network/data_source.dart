@@ -7,6 +7,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:south24/domain/modela/arabic_versions.dart';
 import 'package:south24/domain/modela/infographics.dart';
 import 'package:south24/domain/modela/news_model.dart';
+import 'package:south24/domain/modela/translated_news.dart';
 import 'package:south24/domain/modela/twitter_model.dart';
 import 'package:south24/domain/modela/youtube_model.dart';
 
@@ -14,13 +15,12 @@ class DataSource {
   DataSource._();
   static DataSource instance = DataSource._();
 
-  Future<NewsJson> fetchNewsById(String url) async {
-    print(url);
+  Future<TranslatedNews> fetchNewsById(String url) async {
     final response = await http.get(Uri.parse(url));
     if (response.statusCode == 200) {
       final encodedBody = utf8.decode(response.bodyBytes);
       final jsonData = json.decode(encodedBody) as List<dynamic>;
-      final newsList = jsonData.map((data) => NewsJson.fromJson(data)).toList();
+      final newsList = jsonData.map((data) => TranslatedNews.fromJson(data)).toList();
       if (newsList.isNotEmpty) {
         return newsList.first;
       } else {
@@ -88,7 +88,6 @@ class DataSource {
 
   Future<List<YoutubeModel>> fetchYoutubeData(String url) async {
     final response = await http.get(Uri.parse(url));
-
     if (response.statusCode == 200) {
       final encodedBody = utf8.decode(response.bodyBytes);
       final jsonData = json.decode(encodedBody) as List<dynamic>;

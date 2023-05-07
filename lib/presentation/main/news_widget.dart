@@ -8,20 +8,21 @@ import 'package:south24/presentation/resources/routs_manager.dart';
 import 'package:south24/presentation/resources/values_manager.dart';
 
 class NewsWidget extends StatelessWidget {
-  const NewsWidget(
-      {super.key,
-      required this.height,
-      required this.width,
-      required this.news,
-      required this.textOverFlow,
-      this.maxlines,
-      required this.padding});
+  const NewsWidget({
+    Key? key,
+    required this.news,
+    this.height,
+    this.width,
+    required this.textOverFlow,
+    this.maxLines,
+    required this.padding,
+  }) : super(key: key);
 
   final NewsJson news;
   final double? height;
   final double? width;
   final bool textOverFlow;
-  final int? maxlines;
+  final int? maxLines;
   final double padding;
 
   @override
@@ -31,7 +32,7 @@ class NewsWidget extends StatelessWidget {
         Navigator.pushNamed(
           context,
           Routes.detailsRoute,
-          arguments: news, // Pass the news object as an argument
+          arguments: news,
         );
       },
       child: Stack(
@@ -53,14 +54,18 @@ class NewsWidget extends StatelessWidget {
             child: Container(
               color: ColorManager.lightGrey,
               padding: EdgeInsets.symmetric(
-                  horizontal: padding, vertical: AppSize.s4),
+                horizontal: padding,
+                vertical: AppSize.s4,
+              ),
               child: Center(
-                child: Text(news.newsSubject!.trim(),
-                    textAlign: TextAlign.center,
-                    maxLines: maxlines,
-                    style: textOverFlow
-                        ? Theme.of(context).textTheme.titleMedium
-                        : Theme.of(context).textTheme.titleSmall),
+                child: Text(
+                  news.newsSubject!.trim(),
+                  textAlign: TextAlign.center,
+                  maxLines: maxLines,
+                  style: textOverFlow
+                      ? Theme.of(context).textTheme.titleMedium
+                      : Theme.of(context).textTheme.titleSmall,
+                ),
               ),
             ),
           ),

@@ -17,31 +17,49 @@ class ArabicView extends StatefulWidget {
 
 class _ArabicViewState extends State<ArabicView> {
   @override
+  void initState() {
+    super.initState();
+    final provider = Provider.of<Controller>(context, listen: false);
+    provider.arabic.isEmpty ? provider.getArarbicNews() : null;
+  }
+
+  @override
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
     return Consumer<Controller>(builder: (context, provider, child) {
-      provider.arabic.isEmpty? provider.getArarbicNews():null;
+      if (!provider.isConnected) {
+        return ErrorState(StateRendererType.fullScreenErrorState,
+                AppStrings.noInternetConnection.tr())
+            .getScreenWidget(context);
+      }
+
+      if (provider.arabic.isEmpty && !provider.exceotionOccured) {
+        return LoadingState(
+                stateRendererType: StateRendererType.fullScreenLoadingState)
+            .getScreenWidget(context);
+      }
+      
+      if (provider.exceotionOccured) {
+        return Center(
+          child: ElevatedButton(
+              onPressed: () {
+                provider.getArarbicNews();
+              },
+              child: Text("reload")),
+        );
+      }
+
       return Scaffold(
-        body: !provider.isConnected
-            ? ErrorState(StateRendererType.fullScreenErrorState,
-                    AppStrings.noInternetConnection.tr())
-                .getScreenWidget(context)
-            : provider.arabic.isEmpty
-                ? LoadingState(
-                        stateRendererType:
-                            StateRendererType.fullScreenLoadingState)
-                    .getScreenWidget(context)
-                : ListView.builder(
-                    itemCount: provider.arabic.length,
-                    padding:
-                        const EdgeInsets.symmetric(vertical: AppPadding.p8),
-                    itemBuilder: (context, index) {
-                      return NewsWidgetHorizantal(
-                        size: size,
-                        news: provider.arabic[index],
-                      );
-                    },
-                  ),
+        body: ListView.builder(
+          itemCount: provider.arabic.length,
+          padding: const EdgeInsets.symmetric(vertical: AppPadding.p8),
+          itemBuilder: (context, index) {
+            return NewsWidgetHorizontal(
+              size: size,
+              news: provider.arabic[index],
+            );
+          },
+        ),
       );
     });
   }

@@ -19,14 +19,14 @@ class YoutubeModel {
       this.published});
 
   YoutubeModel.fromJson(Map<String, dynamic> json) {
-    ytId = json['yt_id'];
-    ytVideoId = json['yt_videoId'];
-    ytTitle = json['yt_title'];
-    ytTitlee = json['yt_titlee'];
-    ytDes = json['yt_des'];
-    ytUrl = json['yt_url'];
-    ytDatetime = json['yt_datetime'];
-    published = json['published'];
+    ytId = json['yt_id'] ?? "";
+    ytVideoId = json['yt_videoId'] ?? "";
+    ytTitle = json['yt_title'] ?? "";
+    ytTitlee = json['yt_titlee'] ?? "";
+    ytDes = json['yt_des'] ?? "";
+    ytUrl = json['yt_url'] ?? "";
+    ytDatetime = json['yt_datetime'] ?? "";
+    published = json['published'] ?? "";
   }
 
   Map<String, dynamic> toJson() {

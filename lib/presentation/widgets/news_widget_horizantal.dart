@@ -18,6 +18,8 @@ class NewsWidgetHorizontal extends StatelessWidget {
   final Size size;
   final NewsJson news;
 
+  
+
   @override
   Widget build(BuildContext context) {
     return InkWell(
@@ -75,7 +77,7 @@ class NewsWidgetHorizontal extends StatelessWidget {
                           fontSize: FontSizeManager.s12,
                           color: ColorManager.black,
                           fontFamily: FontConstants.fontFamily,
-                          fontWeight: FontWeight.w700,
+                          fontWeight: FontWeight.bold,
                         ),
                       ),
                       Expanded(
@@ -85,7 +87,7 @@ class NewsWidgetHorizontal extends StatelessWidget {
                             fontSize: FontSizeManager.s12,
                             color: ColorManager.grey,
                             fontFamily: FontConstants.fontFamily,
-                            fontWeight: FontWeight.w300,
+                            fontWeight: FontWeightManager.light,
                           ),
                         ),
                       ),

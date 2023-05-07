@@ -99,7 +99,7 @@ class _MianStateAr extends State<MianViewAr> {
                               style: Theme.of(context).textTheme.displayLarge,
                             ),
                             InkWell(
-                              onTap: () {
+                              onTap: () async {
                                 provider.animateToPage(2);
                                 provider.animateToReportsPage(2);
                               },
@@ -120,7 +120,7 @@ class _MianStateAr extends State<MianViewAr> {
                         shrinkWrap: true,
                         itemCount: 3,
                         itemBuilder: (context, index) {
-                          return NewsWidgetHorizantal(
+                          return NewsWidgetHorizontal(
                               size: size, news: provider.international[index]);
                         },
                       ),

@@ -35,7 +35,7 @@ class _AnalyticsViewState extends State<AnalyticsView> {
                     padding:
                         const EdgeInsets.symmetric(vertical: AppPadding.p8),
                     itemBuilder: (context, index) {
-                      return NewsWidgetHorizantal(
+                      return NewsWidgetHorizontal(
                         size: size,
                         news: provider.analytics[index],
                       );

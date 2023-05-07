@@ -24,46 +24,47 @@ class _InfographicsViewState extends State<InfographicsView> {
     final bool isPortrait = screenSize.height > screenSize.width;
     final TextStyle textStyle = getMediumStyle(color: ColorManager.black);
     return Consumer<Controller>(builder: (context, provider, child) {
+
       if (provider.isArabic()) {
-        provider.infographic.isEmpty
-            ? provider.getInfographicArNews()
-            : null;
+       if(provider.infographic.isEmpty){
+          provider.getInfographicArNews();
+       }
       } else {
-        provider.infographic.isEmpty
-            ? provider.getInfographicEnNews()
-            : null;
+       if(provider.infographic.isEmpty){
+          provider.getInfographicEnNews();
+       }
       }
+
+      if (!provider.isConnected) {
+        return ErrorState(StateRendererType.fullScreenErrorState,
+                AppStrings.noInternetConnection.tr())
+            .getScreenWidget(context);
+      }
+      if (provider.infographic.isEmpty) {
+        return LoadingState(
+                stateRendererType: StateRendererType.fullScreenLoadingState)
+            .getScreenWidget(context);
+      }
+
       return Scaffold(
-        body: !provider.isConnected
-            ? ErrorState(StateRendererType.fullScreenErrorState,
-                    AppStrings.noInternetConnection.tr())
-                .getScreenWidget(context)
-            : provider.infographic.isEmpty
-                ? LoadingState(
-                        stateRendererType:
-                            StateRendererType.fullScreenLoadingState)
-                    .getScreenWidget(context)
-                : Padding(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: AppPadding.p12),
-                    child: GridView.builder(
-                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: isPortrait ? 1 : 2,
-                        crossAxisSpacing: AppSize.s12,
-                        mainAxisExtent: screenSize.height / 2 +
-                            AppSize.s8 +
-                            textStyle.fontSize!,
-                      ),
-                      itemCount: provider.infographic.length,
-                      padding:
-                          const EdgeInsets.symmetric(vertical: AppPadding.p8),
-                      itemBuilder: (context, index) {
-                        return InfographicsWidget(
-                          infographics: provider.infographic[index],
-                        );
-                      },
-                    ),
-                  ),
+        body: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: AppPadding.p12),
+          child: GridView.builder(
+            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: isPortrait ? 1 : 2,
+              crossAxisSpacing: AppSize.s12,
+              mainAxisExtent:
+                  screenSize.height / 2 + AppSize.s8 + textStyle.fontSize!,
+            ),
+            itemCount: provider.infographic.length,
+            padding: const EdgeInsets.symmetric(vertical: AppPadding.p8),
+            itemBuilder: (context, index) {
+              return InfographicsWidget(
+                infographics: provider.infographic[index],
+              );
+            },
+          ),
+        ),
       );
     });
   }

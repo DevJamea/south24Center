@@ -34,11 +34,38 @@ class _SearchedNewsDetailsState extends State<SearchedNewsDetails> {
     super.initState();
   }
 
-
   @override
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
     return Consumer<Controller>(builder: (context, provider, child) {
+      if (!provider.isConnected) {
+        return Scaffold(
+          appBar: AppBar(
+              primary: true,
+              title: Image(
+                image: const AssetImage(ImageAssets.splashLogo),
+                height: AppBar().preferredSize.height - AppSize.s18,
+              )),
+          body: ErrorState(StateRendererType.fullScreenErrorState,
+                  AppStrings.noInternetConnection.tr())
+              .getScreenWidget(context),
+        );
+      }
+
+      if (provider.searchedNews == null) {
+        return Scaffold(
+          appBar: AppBar(
+              primary: true,
+              title: Image(
+                image: const AssetImage(ImageAssets.splashLogo),
+                height: AppBar().preferredSize.height - AppSize.s18,
+              )),
+          body: LoadingState(
+                  stateRendererType: StateRendererType.fullScreenLoadingState)
+              .getScreenWidget(context),
+        );
+      }
+
       return Scaffold(
         appBar: AppBar(
             primary: true,
@@ -47,116 +74,112 @@ class _SearchedNewsDetailsState extends State<SearchedNewsDetails> {
               height: AppBar().preferredSize.height - AppSize.s18,
             )),
         body: SafeArea(
-          child: provider.searchedNews == null
-              ? LoadingState(
-                      stateRendererType:
-                          StateRendererType.fullScreenLoadingState)
-                  .getScreenWidget(context)
-              : SingleChildScrollView(
+          child: SingleChildScrollView(
+            child: Column(
+              children: [
+                CachedNetworkImage(
+                  height: size.height > size.width
+                      ? size.height * AppSize.s_3
+                      : size.width * AppSize.s_5,
+                  width: double.infinity,
+                  fit: BoxFit.cover,
+                  imageUrl: provider.searchedNews!.newsPic!.trim(),
+                  placeholder: (context, url) =>
+                      SvgPicture.asset(ImageAssets.imagePhaceholder),
+                  errorWidget: (context, url, error) =>
+                      const Center(child: Icon(Icons.error)),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(AppPadding.p12),
                   child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      CachedNetworkImage(
-                        height: size.height > size.width
-                            ? size.height * AppSize.s_3
-                            : size.width * AppSize.s_5,
-                        width: double.infinity,
-                        fit: BoxFit.cover,
-                        imageUrl: provider.searchedNews!.newsPic!.trim(),
-                        placeholder: (context, url) =>
-                            SvgPicture.asset(ImageAssets.imagePhaceholder),
-                        errorWidget: (context, url, error) =>
-                            const Center(child: Icon(Icons.error)),
+                      Text(
+                        provider.searchedNews!.newsSubject!.trim(),
+                        style: Theme.of(context).textTheme.bodyMedium,
+                      ),
+                      Row(
+                        children: [
+                          Icon(
+                            Icons.watch_later_outlined,
+                            color: ColorManager.lightPrimary,
+                            size: AppSize.s14,
+                          ),
+                          SizedBox(
+                            width: AppSize.s4,
+                          ),
+                          Text(
+                            formatDate(provider.searchedNews!.newsDatetime!),
+                            style:
+                                getMediumStyle(color: ColorManager.lightBlack),
+                          ),
+                        ],
+                      ),
+                      SocialMediaIcons(
+                        newsId: provider.searchedNews!.newsId,
+                        text: provider
+                            .checkTranslatedNews(provider.searchedNews!),
+                        transletedNewsId: provider.searchedNewsId(),
                       ),
                       Padding(
-                        padding: const EdgeInsets.all(AppPadding.p12),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              provider.searchedNews!.newsSubject!.trim(),
-                              style: Theme.of(context).textTheme.bodyMedium,
-                            ),
-                            Row(
-                              children: [
-                                Icon(
-                                  Icons.watch_later_outlined,
-                                  color: ColorManager.lightPrimary,
-                                  size: AppSize.s14,
-                                ),
-                                SizedBox(
-                                  width: AppSize.s4,
-                                ),
-                                Text(
-                                  formatDate(
-                                      provider.searchedNews!.newsDatetime!),
-                                  style: getMediumStyle(
-                                      color: ColorManager.lightBlack),
-                                ),
-                              ],
-                            ),
-                            SocialMediaIcons(
-                              newsId: provider.searchedNews!.newsId,
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.only(
-                                top: AppPadding.p8,
-                              ),
-                              child: Html(
-                                data: provider.searchedNews!.newsBudy!.trim(),
-                                onLinkTap: (url, context, attributes,
-                                        element) =>
-                                    launchUrl(Uri.parse(url!),
-                                        mode: LaunchMode.externalApplication),
-                                style: {
-                                  'html': Style(
-                                      color: ColorManager.black,
-                                      fontSize: FontSize(FontSizeManager.s14),
-                                      fontFamily: FontConstants.fontFamily,
-                                      textAlign: TextAlign.justify),
-                                },
-                              ),
-                            ),
-                            Html(
-                              data: provider.searchedNews!.newsAuth!.trim(),
-                              onLinkTap: (url, context, attributes, element) =>
-                                  launchUrl(Uri.parse(url!),
-                                      mode: LaunchMode.externalApplication),
-                              style: {
-                                'html': Style(
-                                    color: ColorManager.black,
-                                    fontSize: FontSize(FontSizeManager.s12),
-                                    fontFamily: FontConstants.fontFamily,
-                                    textAlign: TextAlign.justify),
-                              },
-                            ),
-                            SizedBox(
-                              height: AppSize.s12,
-                            ),
-                            Html(
-                              data: provider.searchedNews!.newsRef!.trim(),
-                              onLinkTap: (url, context, attributes, element) =>
-                                  launchUrl(Uri.parse(url!),
-                                      mode: LaunchMode.externalApplication),
-                              style: {
-                                'html': Style(
-                                    color: ColorManager.black,
-                                    fontSize: FontSize(FontSizeManager.s12),
-                                    fontFamily: FontConstants.fontFamily,
-                                    textAlign: TextAlign.justify),
-                              },
-                            ),
-                          ],
+                        padding: const EdgeInsets.only(
+                          top: AppPadding.p8,
                         ),
+                        child: Html(
+                          data: provider.searchedNews!.newsBudy!.trim(),
+                          onLinkTap: (url, context, attributes, element) =>
+                              launchUrl(Uri.parse(url!),
+                                  mode: LaunchMode.externalApplication),
+                          style: {
+                            'html': Style(
+                                color: ColorManager.black,
+                                fontSize: FontSize(FontSizeManager.s14),
+                                fontFamily: FontConstants.fontFamily,
+                                textAlign: TextAlign.justify),
+                          },
+                        ),
+                      ),
+                      Html(
+                        data: provider.searchedNews!.newsAuth!.trim(),
+                        onLinkTap: (url, context, attributes, element) =>
+                            launchUrl(Uri.parse(url!),
+                                mode: LaunchMode.externalApplication),
+                        style: {
+                          'html': Style(
+                              color: ColorManager.black,
+                              fontSize: FontSize(FontSizeManager.s12),
+                              fontFamily: FontConstants.fontFamily,
+                              textAlign: TextAlign.justify),
+                        },
+                      ),
+                      SizedBox(
+                        height: AppSize.s12,
+                      ),
+                      Html(
+                        data: provider.searchedNews!.newsRef!.trim(),
+                        onLinkTap: (url, context, attributes, element) =>
+                            launchUrl(Uri.parse(url!),
+                                mode: LaunchMode.externalApplication),
+                        style: {
+                          'html': Style(
+                              color: ColorManager.black,
+                              fontSize: FontSize(FontSizeManager.s12),
+                              fontFamily: FontConstants.fontFamily,
+                              textAlign: TextAlign.justify),
+                        },
                       ),
                     ],
                   ),
                 ),
+              ],
+            ),
+          ),
         ),
       );
     });
   }
 
- String formatDate(String dateStr) {
+  String formatDate(String dateStr) {
     String currentLocale = Localizations.localeOf(context).languageCode;
     String weekday = DateFormat('E').format(DateTime.parse(dateStr));
     String day = dateStr.substring(8, 10);

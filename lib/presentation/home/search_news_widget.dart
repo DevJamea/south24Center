@@ -29,7 +29,9 @@ class SearchNewsWidget extends StatelessWidget {
       },
       child: Padding(
         padding: const EdgeInsets.symmetric(
-            vertical: AppPadding.p4, horizontal: AppPadding.p12),
+          vertical: AppPadding.p4,
+          horizontal: AppPadding.p12,
+        ),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.end,
           children: [
@@ -72,12 +74,13 @@ class SearchNewsWidget extends StatelessWidget {
                         child: Text(
                           news.newsSubject!.trim(),
                           maxLines: 4,
+                          overflow: TextOverflow.fade,
                           style: TextStyle(
-                              overflow: TextOverflow.fade,
-                              fontSize: FontSizeManager.s12,
-                              color: ColorManager.black,
-                              fontFamily: FontConstants.fontFamily,
-                              fontWeight: FontWeightManager.bold),
+                            fontSize: FontSizeManager.s12,
+                            color: ColorManager.black,
+                            fontFamily: FontConstants.fontFamily,
+                            fontWeight: FontWeightManager.bold,
+                          ),
                         ),
                       ),
                     ],

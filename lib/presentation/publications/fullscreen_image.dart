@@ -6,17 +6,19 @@ import 'package:south24/presentation/resources/values_manager.dart';
 
 class FullscreenImageView extends StatelessWidget {
   final String imageUrl;
-  const FullscreenImageView({super.key, required this.imageUrl});
+
+  const FullscreenImageView({Key? key, required this.imageUrl}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-          primary: true,
-          title: Image(
-            image: const AssetImage(ImageAssets.splashLogo),
-            height: AppBar().preferredSize.height - AppSize.s18,
-          )),
+        primary: true,
+        title: Image(
+          image: const AssetImage(ImageAssets.splashLogo),
+          height: AppBar().preferredSize.height - AppSize.s18,
+        ),
+      ),
       body: SafeArea(
         child: InkWell(
           onTap: () {

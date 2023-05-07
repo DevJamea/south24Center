@@ -31,9 +31,14 @@ class _HomeViewState extends State<HomeView>
   TabController? _tabController;
   @override
   void initState() {
+    super.initState();
     final provider = Provider.of<Controller>(context, listen: false);
     _tabController = TabController(length: provider.tabsAr.length, vsync: this);
-    super.initState();
+     if (!provider.isArabic()) {
+        provider.twitter.isEmpty ? provider.getTwitterEnNews() : null;
+      } else {
+        provider.twitter.isEmpty ? provider.getTwitterArNews() : null;
+      }
   }
 
   @override
@@ -47,11 +52,7 @@ class _HomeViewState extends State<HomeView>
     var size = MediaQuery.of(context).size;
     _tabController?.animateTo(Provider.of<Controller>(context).curretnTab);
     return Consumer<Controller>(builder: (context, provider, widget) {
-      if (!provider.isArabic()) {
-        provider.twitter.isEmpty ? provider.getTwitterEnNews() : null;
-      } else {
-        provider.twitter.isEmpty ? provider.getTwitterArNews() : null;
-      }
+     
       return DefaultTabController(
           length: provider.tabsAr.length,
           child: Scaffold(

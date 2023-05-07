@@ -12,6 +12,7 @@ import 'package:south24/presentation/resources/values_manager.dart';
 class PublicationsWidget extends StatelessWidget {
   const PublicationsWidget({Key? key, required this.versions})
       : super(key: key);
+
   final ArabicVersions versions;
 
   @override
@@ -19,19 +20,20 @@ class PublicationsWidget extends StatelessWidget {
     final Size screenSize = MediaQuery.of(context).size;
     final bool isPortrait = screenSize.height > screenSize.width;
     final double aspectRatio = isPortrait ? 1.5 : 0.75;
-
     final double height = screenSize.height / 2;
     final double width = screenSize.width / 2 - AppSize.s8;
 
-    final TextStyle textStyle =
-        getMediumStyle(color: ColorManager.black, fontSize: FontSizeManager.s14);
+    final TextStyle textStyle = getMediumStyle(
+      color: ColorManager.black,
+      fontSize: FontSizeManager.s14,
+    );
 
     return InkWell(
       onTap: () {
         Navigator.pushNamed(
           context,
           Routes.ArabicVersionsDetailsRoute,
-          arguments: versions, // Pass the news object as an argument
+          arguments: versions,
         );
       },
       child: SizedBox(

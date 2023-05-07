@@ -11,60 +11,57 @@ import 'package:south24/presentation/resources/values_manager.dart';
 
 class YoutubeWidget extends StatelessWidget {
   const YoutubeWidget({
-    super.key,
+    Key? key,
     required this.size,
     required this.youtubeModel,
-  });
+  }) : super(key: key);
 
   final Size size;
   final YoutubeModel youtubeModel;
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<Controller>(builder: (context, provider, child) {
-      return Row(
-        children: [
-          Expanded(
-            flex: 1,
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(AppSize.s4),
-              child: CachedNetworkImage(
-                height: size.height > size.width
-                    ? size.height * AppSize.s_12
-                    : size.width * AppSize.s_12,
-                fit: BoxFit.cover,
-                imageUrl: youtubeModel.ytUrl!,
-                placeholder: (context, url) =>
-                    SvgPicture.asset(ImageAssets.imagePhaceholder),
-                errorWidget: (context, url, error) =>
-                    const Center(child: Icon(Icons.error)),
+    final provider = Provider.of<Controller>(context);
+    final imageUrl = youtubeModel.ytUrl ?? '';
+    final isArabic = provider.isArabic();
+
+    return Row(
+      children: [
+        Expanded(
+          flex: 1,
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(AppSize.s4),
+            child: CachedNetworkImage(
+              height: size.longestSide * AppSize.s_12,
+              fit: BoxFit.cover,
+              imageUrl: imageUrl,
+              placeholder: (context, url) =>
+                  SvgPicture.asset(ImageAssets.imagePhaceholder),
+              errorWidget: (context, url, error) =>
+                  const Center(child: Icon(Icons.error)),
+            ),
+          ),
+        ),
+        Expanded(
+          flex: 2,
+          child: Container(
+            alignment: Alignment.center,
+            height: size.longestSide * AppSize.s_12,
+            padding: const EdgeInsets.symmetric(horizontal: AppPadding.p8),
+            child: Text(
+              isArabic ? youtubeModel.ytTitle!.trim() : youtubeModel.ytTitlee!.trim(),
+              maxLines: 3,
+              overflow: TextOverflow.ellipsis,
+              style: TextStyle(
+                fontSize: FontSizeManager.s14,
+                fontWeight: FontWeightManager.bold,
+                fontFamily: FontConstants.fontFamily,
+                color: ColorManager.black,
               ),
             ),
           ),
-          Expanded(
-            flex: 2,
-            child: Container(
-              alignment: Alignment.center,
-              height: size.height > size.width
-                  ? size.height * AppSize.s_12
-                  : size.width * AppSize.s_12,
-              padding: const EdgeInsets.symmetric(horizontal: AppPadding.p8),
-              child: Text(
-                provider.isArabic()
-                    ? youtubeModel.ytTitle!.trim()
-                    : youtubeModel.ytTitlee!.trim(),
-                maxLines: 3,
-                style: TextStyle(
-                    overflow: TextOverflow.ellipsis,
-                    fontSize: FontSizeManager.s14,
-                    color: ColorManager.black,
-                    fontFamily: FontConstants.fontFamily,
-                    fontWeight: FontWeightManager.bold),
-              ),
-            ),
-          ),
-        ],
-      );
-    });
+        ),
+      ],
+    );
   }
 }

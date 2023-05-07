@@ -12,71 +12,68 @@ class SearchScreen extends StatefulWidget {
   const SearchScreen({Key? key}) : super(key: key);
 
   @override
-  State<SearchScreen> createState() => _SearchScreenState();
+  _SearchScreenState createState() => _SearchScreenState();
 }
 
 class _SearchScreenState extends State<SearchScreen> {
   @override
   void deactivate() {
+    super.deactivate();
     final provider = Provider.of<Controller>(context, listen: false);
     provider.searchController.text = "";
     provider.searchList = [];
-    super.deactivate();
   }
 
   @override
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
-    return Consumer<Controller>(builder: (context, provider, child) {
-      return WillPopScope(
-        onWillPop: () async {
-          Navigator.pop(context);
-          return true;
-        },
-        child: Scaffold(
+    return Consumer<Controller>(
+      builder: (context, provider, child) {
+        return Scaffold(
           appBar: AppBar(
-              primary: true,
-              title: Image(
-                image: const AssetImage(ImageAssets.splashLogo),
-                height: AppBar().preferredSize.height - AppSize.s18,
-              )),
+            primary: true,
+            title: Image(
+              image: const AssetImage(ImageAssets.splashLogo),
+              height: AppBar().preferredSize.height - AppSize.s18,
+            ),
+          ),
           body: SafeArea(
             child: Column(
               children: [
                 SearchTextField(),
-                const Divider(
-                  thickness: AppSize.s2,
-                ),
-                SizedBox(
-                  height: AppSize.s28,
-                ),
+                const Divider(thickness: AppSize.s2),
+                const SizedBox(height: AppSize.s28),
                 Expanded(
                   flex: 1,
-                  child: Container(
-                      child: provider.searchList == null
-                          ? LoadingState(
-                                  stateRendererType:
-                                      StateRendererType.fullScreenLoadingState)
-                              .getScreenWidget(context)
-                          : provider.searchList!.isEmpty
-                              ? NoDataState(
-                                      stateRendererType: StateRendererType
-                                          .fullScreenNoDataState)
-                                  .getScreenWidget(context)
-                              : ListView.builder(
-                                  itemCount: provider.searchList!.length,
-                                  itemBuilder: (context, index) {
-                                    return SearchNewsWidget(
-                                        size: size,
-                                        news: provider.searchList![index]);
-                                  },
-                                )),
-                )
+                  child: _buildSearchResults(size, provider),
+                ),
               ],
             ),
           ),
-        ),
+        );
+      },
+    );
+  }
+
+  Widget _buildSearchResults(Size size, Controller provider) {
+    if (provider.searchList == null) {
+      return LoadingState(
+        stateRendererType: StateRendererType.fullScreenLoadingState,
+      ).getScreenWidget(context);
+    } else if (provider.searchList!.isEmpty) {
+      return NoDataState(
+        stateRendererType: StateRendererType.fullScreenNoDataState,
+      ).getScreenWidget(context);
+    } else {
+      return ListView.builder(
+        itemCount: provider.searchList!.length,
+        itemBuilder: (context, index) {
+          return SearchNewsWidget(
+            size: size,
+            news: provider.searchList![index],
+          );
+        },
       );
-    });
+    }
   }
 }

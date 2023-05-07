@@ -11,63 +11,67 @@ import 'package:south24/presentation/resources/styles_manager.dart';
 import 'package:south24/presentation/resources/values_manager.dart';
 
 class SubPublicationsView extends StatefulWidget {
-  const SubPublicationsView({super.key});
+  const SubPublicationsView({Key? key}) : super(key: key);
 
   @override
-  State<SubPublicationsView> createState() => _SubPublicationsViewState();
+  _SubPublicationsViewState createState() => _SubPublicationsViewState();
 }
 
 class _SubPublicationsViewState extends State<SubPublicationsView> {
   @override
   Widget build(BuildContext context) {
-    final Size screenSize = MediaQuery.of(context).size;
-    final bool isPortrait = screenSize.height > screenSize.width;
-    final TextStyle textStyle = getMediumStyle(color: ColorManager.black);
-    return Consumer<Controller>(builder: (context, provider, child) {
-      if (provider.isArabic()) {
-       provider.arabicVersions.isEmpty
-            ? provider.getArabicVersionsNews()
-            : null;
-      } else {
-        provider.publications.isEmpty ? provider.getPublicationsNews() : null;
-      }
+    final size = MediaQuery.of(context).size;
+    final isPortrait = size.height > size.width;
+    final textStyle = getMediumStyle(color: ColorManager.black);
 
-      return Scaffold(
-        body: !provider.isConnected
-            ? ErrorState(StateRendererType.fullScreenErrorState,
-                    AppStrings.noInternetConnection.tr())
-                .getScreenWidget(context)
-            : provider.checkPublicationsNullable(context)
-                ? LoadingState(
-                        stateRendererType:
-                            StateRendererType.fullScreenLoadingState)
-                    .getScreenWidget(context)
-                : Padding(
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: AppPadding.p12),
-                    child: GridView.builder(
-                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: isPortrait ? 1 : 2,
-                        crossAxisSpacing: AppSize.s12,
-                        mainAxisExtent: screenSize.height / 2 +
-                            AppSize.s8 +
-                            textStyle.fontSize!,
-                      ),
-                      itemCount: provider.isArabic()
-                          ? provider.arabicVersions.length
-                          : provider.publications.length,
-                      padding:
-                          const EdgeInsets.symmetric(vertical: AppPadding.p8),
-                      itemBuilder: (context, index) {
-                        return PublicationsWidget(
-                          versions: provider.isArabic()
-                              ? provider.arabicVersions[index]
-                              : provider.publications[index],
-                        );
-                      },
-                    ),
-                  ),
-      );
-    });
+    return Consumer<Controller>(
+      builder: (context, provider, child) {
+        if (provider.isArabic()) {
+          if (provider.arabicVersions.isEmpty) {
+            provider.getArabicVersionsNews();
+          }
+        } else {
+          if (provider.publications.isEmpty) {
+            provider.getPublicationsNews();
+          }
+        }
+        if (!provider.isConnected) {
+          return ErrorState(StateRendererType.fullScreenErrorState,
+                  AppStrings.noInternetConnection.tr())
+              .getScreenWidget(context);
+        }
+
+        if (provider.checkPublicationsNullable(context)) {
+          return LoadingState(
+                  stateRendererType: StateRendererType.fullScreenLoadingState)
+              .getScreenWidget(context);
+        }
+
+        return Scaffold(
+          body: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: AppPadding.p12),
+            child: GridView.builder(
+              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: isPortrait ? 1 : 2,
+                crossAxisSpacing: AppSize.s12,
+                mainAxisExtent:
+                    size.height / 2 + AppSize.s8 + textStyle.fontSize!,
+              ),
+              itemCount: provider.isArabic()
+                  ? provider.arabicVersions.length
+                  : provider.publications.length,
+              padding: const EdgeInsets.symmetric(vertical: AppPadding.p8),
+              itemBuilder: (context, index) {
+                return PublicationsWidget(
+                  versions: provider.isArabic()
+                      ? provider.arabicVersions[index]
+                      : provider.publications[index],
+                );
+              },
+            ),
+          ),
+        );
+      },
+    );
   }
 }

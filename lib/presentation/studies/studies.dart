@@ -8,42 +8,56 @@ import 'package:south24/presentation/resources/strings_mangaer.dart';
 import 'package:south24/presentation/resources/values_manager.dart';
 import 'package:south24/presentation/widgets/news_widget_horizantal.dart';
 
-
 class StudiesView extends StatefulWidget {
-  const StudiesView({super.key});
+  const StudiesView({Key? key}) : super(key: key);
 
   @override
   State<StudiesView> createState() => _StudiesViewState();
 }
 
 class _StudiesViewState extends State<StudiesView> {
+
+  @override
+  void initState() {
+    super.initState();
+    final provider = Provider.of<Controller>(context, listen: false);
+    if (provider.stdudies.isEmpty) {
+          provider.getStdudiesNews();
+        }
+  }
   @override
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
-    return Consumer<Controller>(builder: (context, provider, child) {
-      provider.stdudies.isEmpty ? provider.getStdudiesNews() : null;
-      return Scaffold(
-        body: !provider.isConnected
-            ? ErrorState(StateRendererType.fullScreenErrorState,
-                    AppStrings.noInternetConnection.tr())
-                .getScreenWidget(context)
-            : provider.stdudies.isEmpty
-                ? LoadingState(
-                        stateRendererType:
-                            StateRendererType.fullScreenLoadingState)
-                    .getScreenWidget(context)
-                : ListView.builder(
-                    itemCount: provider.stdudies.length,
-                    padding:
-                        const EdgeInsets.symmetric(vertical: AppPadding.p8),
-                    itemBuilder: (context, index) {
-                      return NewsWidgetHorizantal(
-                        size: size,
-                        news: provider.stdudies[index],
-                      );
-                    },
-                  ),
-      );
-    });
+    return Consumer<Controller>(
+      builder: (context, provider, child) {
+        
+
+        if (!provider.isConnected) {
+          return ErrorState(
+            StateRendererType.fullScreenErrorState,
+            AppStrings.noInternetConnection.tr(),
+          ).getScreenWidget(context);
+        }
+
+        if (provider.stdudies.isEmpty) {
+          return LoadingState(
+            stateRendererType: StateRendererType.fullScreenLoadingState,
+          ).getScreenWidget(context);
+        }
+
+        return Scaffold(
+          body: ListView.builder(
+            itemCount: provider.stdudies.length,
+            padding: const EdgeInsets.symmetric(vertical: AppPadding.p8),
+            itemBuilder: (context, index) {
+              return NewsWidgetHorizontal(
+                size: size,
+                news: provider.stdudies[index],
+              );
+            },
+          ),
+        );
+      },
+    );
   }
 }

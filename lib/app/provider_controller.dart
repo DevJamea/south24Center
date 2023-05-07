@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:connectivity_plus/connectivity_plus.dart';
@@ -10,12 +11,16 @@ import 'package:south24/data/network/data_source.dart';
 import 'package:south24/domain/modela/arabic_versions.dart';
 import 'package:south24/domain/modela/infographics.dart';
 import 'package:south24/domain/modela/news_model.dart';
+import 'package:south24/domain/modela/translated_news.dart';
 import 'package:south24/domain/modela/twitter_model.dart';
 import 'package:south24/domain/modela/youtube_model.dart';
+import 'package:south24/presentation/resources/color_manager.dart';
 import 'package:south24/presentation/resources/strings_mangaer.dart';
+import 'package:south24/presentation/resources/values_manager.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
 class Controller extends ChangeNotifier {
+  bool exceotionOccured = false;
   int current = 0;
   int currentReports = 0;
   int curretnTab = 0;
@@ -26,7 +31,9 @@ class Controller extends ChangeNotifier {
   YoutubePlayerController? youtubePlayerController;
   String? selectedYoutube;
   String? pdfFilePath;
-  NewsJson? searchedNews;
+  TranslatedNews? searchedNews;
+  TranslatedNews? translateNews;
+  TranslatedNews? translatedNews;
   static GlobalKey<NavigatorState> navKey = GlobalKey();
 
   Controller() {}
@@ -55,7 +62,7 @@ class Controller extends ChangeNotifier {
     AppStrings.language,
   ];
 
-  List<NewsJson> analytics= [];
+  List<NewsJson> analytics = [];
   List<NewsJson> editorial = [];
   List<NewsJson> specialReports = [];
   List<NewsJson> international = [];
@@ -72,7 +79,6 @@ class Controller extends ChangeNotifier {
   List<NewsJson> reports = [];
   List<ArabicVersions> publications = [];
   List<ArabicVersions> quarterly = [];
-
 
   // return tabs list based language
 
@@ -157,7 +163,6 @@ class Controller extends ChangeNotifier {
     }
   }
 
-
   bool checkPublicationsNullable(BuildContext context) {
     if (isArabic()) {
       if (arabicVersions.isEmpty) {
@@ -176,16 +181,20 @@ class Controller extends ChangeNotifier {
 
   bool checkTwittersNullable(BuildContext context) {
     if (twitter.where((tweet) => tweet.hours! < 2).isEmpty) {
-        return true;
-      } else {
-        return false;
-      }
+      return true;
+    } else {
+      return false;
+    }
   }
 
 // get data funcations
 
   Future<List<NewsJson>> base(String url) async {
-    return await DataSource.instance.fetchNewsData(url);
+    try {
+      return await DataSource.instance.fetchNewsData(url);
+    } on Exception catch (e) {
+      throw Exception('Failed to load data');
+    }
   }
 
   searchData(String query) async {
@@ -200,6 +209,13 @@ class Controller extends ChangeNotifier {
     searchedNews = null;
     String url = Constants.getNewsDetails + id;
     searchedNews = await DataSource.instance.fetchNewsById(url);
+    notifyListeners();
+  }
+
+  getTranslartedNewsById(String id) async {
+    translatedNews = null;
+    String url = Constants.getNewsDetails + id;
+    translatedNews = await DataSource.instance.fetchNewsById(url);
     notifyListeners();
   }
 
@@ -231,7 +247,15 @@ class Controller extends ChangeNotifier {
   }
 
   getArarbicNews() async {
-    arabic = await base(Constants.arabic);
+    try {
+      log("arabic news");
+      exceotionOccured = false;
+      notifyListeners();
+      arabic = await base(Constants.arabic);
+    } on Exception catch (e) {
+      log("arabic news exception");
+      exceotionOccured = true;
+    }
     notifyListeners();
   }
 
@@ -345,5 +369,57 @@ class Controller extends ChangeNotifier {
         duration: const Duration(milliseconds: 200),
         curve: Curves.easeInOutSine);
     notifyListeners();
+  }
+
+  getNewsTranslate(String id) async {
+    translateNews = null;
+    String url = Constants.getNewsDetails + id;
+    translateNews = await DataSource.instance.fetchNewsById(url);
+    notifyListeners();
+  }
+
+  String? checkTranslatedNews(TranslatedNews translatedNews) {
+    if (translatedNews.link_ar != null) {
+      return "عربي";
+    } else if (translatedNews.link_en != null) {
+      return "English";
+    } else {
+      return null;
+    }
+  }
+
+  String? TranslatedNewsId() {
+    if (translateNews!.link_ar != null) {
+      return translateNews!.link_ar;
+    } else if (translateNews!.link_en != null) {
+      return translateNews!.link_en;
+    } else {
+      return null;
+    }
+  }
+
+   String? searchedNewsId() {
+    if (searchedNews!.link_ar != null) {
+      return searchedNews!.link_ar;
+    } else if (searchedNews!.link_en != null) {
+      return searchedNews!.link_en;
+    } else {
+      return null;
+    }
+  }
+
+  showBottomSheet(Widget widget) {
+    showModalBottomSheet(
+      context: navKey.currentContext!,
+      isScrollControlled: true,
+      shape: RoundedRectangleBorder(
+          borderRadius:
+              BorderRadius.vertical(top: Radius.circular(AppSize.s12))),
+      backgroundColor: ColorManager.white,
+      useSafeArea: true,
+      builder: (context) {
+        return widget;
+      },
+    );
   }
 }

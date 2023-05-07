@@ -14,7 +14,7 @@ import 'package:south24/presentation/resources/values_manager.dart';
 import 'package:south24/presentation/widgets/news_widget_horizantal.dart';
 
 class ReportsView extends StatefulWidget {
-  const ReportsView({super.key});
+  const ReportsView({Key? key}) : super(key: key);
 
   @override
   State<ReportsView> createState() => _ReportsViewState();
@@ -22,19 +22,27 @@ class ReportsView extends StatefulWidget {
 
 class _ReportsViewState extends State<ReportsView>
     with SingleTickerProviderStateMixin {
-  TabController? _tabController;
+  late TabController _tabController;
+  
   @override
   void initState() {
     _tabController = TabController(length: tabs.length, vsync: this);
+    final provider = Provider.of<Controller>(context, listen: false);
+      if (!provider.isArabic()) {
+        if (provider.reports.isEmpty) {
+          provider.getReportsNews();
+        }
+      }
     super.initState();
   }
-@override
+  
+  @override
   void dispose() {
-    _tabController?.dispose();
+    _tabController.dispose();
     super.dispose();
   }
  
-  List<String> tabs = [
+  final List<String> tabs = [
     AppStrings.editorial,
     AppStrings.specialReports,
     AppStrings.international,
@@ -42,23 +50,20 @@ class _ReportsViewState extends State<ReportsView>
     AppStrings.dialogues,
   ];
 
-  int current = 0;
-
   @override
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
     return Consumer<Controller>(builder: (context, provider, child) {
-      _tabController?.animateTo(provider.curretnReportsTab);
-      if (!provider.isArabic()) {
-        provider.reports.isEmpty ? provider.getReportsNews() : null;
-      }
+      _tabController.animateTo(provider.curretnReportsTab);
+
+      
       return !provider.isArabic()
           ? Scaffold(
               body: ListView.builder(
                 itemCount: provider.reports.length,
                 padding: const EdgeInsets.symmetric(vertical: AppPadding.p8),
                 itemBuilder: (context, index) {
-                  return NewsWidgetHorizantal(
+                  return NewsWidgetHorizontal(
                     size: size,
                     news: provider.reports[index],
                   );

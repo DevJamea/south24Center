@@ -6,7 +6,8 @@ import 'package:south24/presentation/resources/color_manager.dart';
 import 'package:south24/presentation/resources/values_manager.dart';
 
 class ImageSlider extends StatelessWidget {
-  const ImageSlider({
+  
+ const ImageSlider({
     super.key,
     required this.size,
     required this.newsList,
@@ -23,17 +24,18 @@ class ImageSlider extends StatelessWidget {
           BoxShadow(
             color: ColorManager.grey,
             blurRadius: 30,
-            offset: const Offset(0, 8), // Shadow position
-          )
+            offset: const Offset(0, 8),
+          ),
         ],
       ),
       child: CarouselSlider(
         options: CarouselOptions(
-            height: size.height > size.width
-                ? size.height * AppSize.s_3
-                : size.width * AppSize.s_5,
-            autoPlay: true,
-            viewportFraction: 1),
+          height: size.height > size.width
+              ? size.height * AppSize.s_3
+              : size.width * AppSize.s_5,
+          autoPlay: true,
+          viewportFraction: 1,
+        ),
         items: newsList.map((i) {
           return Builder(
             builder: (BuildContext context) {
@@ -53,4 +55,3 @@ class ImageSlider extends StatelessWidget {
     );
   }
 }
-

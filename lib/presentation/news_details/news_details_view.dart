@@ -1,8 +1,11 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_html/flutter_html.dart';
-import 'package:flutter_widget_from_html_core/flutter_widget_from_html_core.dart';
+import 'package:provider/provider.dart';
+import 'package:south24/app/provider_controller.dart';
 import 'package:south24/domain/modela/news_model.dart';
+import 'package:south24/presentation/common/state_renderer.dart';
+import 'package:south24/presentation/common/state_renderer_impl.dart';
 import 'package:south24/presentation/news_details/social_media_widget.dart';
 import 'package:south24/presentation/resources/color_manager.dart';
 import 'package:south24/presentation/resources/font_manager.dart';
@@ -25,114 +28,156 @@ class NewsDetailsView extends StatefulWidget {
 
 class _NewsDetailsViewState extends State<NewsDetailsView> {
   @override
+  void initState() {
+    super.initState();
+    final provider = Provider.of<Controller>(context, listen: false);
+    provider.getNewsTranslate(widget.news.newsId!);
+  }
+
+  @override
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
-    return Scaffold(
-      appBar: AppBar(
-          primary: true,
-          title: Image(
-            image: const AssetImage(ImageAssets.splashLogo),
-            height: AppBar().preferredSize.height - AppSize.s18,
-          )),
-      body: SafeArea(
-        child: SingleChildScrollView(
-          child: Column(
-            children: [
-              CachedNetworkImage(
-                height: size.height > size.width
-                    ? size.height * AppSize.s_3
-                    : size.width * AppSize.s_5,
-                width: double.infinity,
-                fit: BoxFit.cover,
-                imageUrl: widget.news.newsPic!.trim(),
-                placeholder: (context, url) =>
-                    SvgPicture.asset(ImageAssets.imagePhaceholder),
-                errorWidget: (context, url, error) =>
-                    const Center(child: Icon(Icons.error)),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(AppPadding.p12),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      widget.news.newsSubject!.trim(),
-                      style: Theme.of(context).textTheme.bodyMedium,
-                    ),
-                    Row(
-                      children: [
-                        Icon(
-                          Icons.watch_later_outlined,
-                          color: ColorManager.lightPrimary,
-                          size: AppSize.s14,
-                        ),
-                        SizedBox(
-                          width: AppSize.s4,
-                        ),
-                        Text(
-                          formatDate(widget.news.newsDatetime!),
-                          style: getMediumStyle(color: ColorManager.lightBlack),
-                        ),
-                      ],
-                    ),
-                    SocialMediaIcons(
-                      newsId: widget.news.newsId,
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(
-                        top: AppPadding.p8,
+
+    return Consumer<Controller>(builder: (context, provider, child) {
+      if (!provider.isConnected) {
+        return Scaffold(
+          appBar: AppBar(
+              primary: true,
+              title: Image(
+                image: const AssetImage(ImageAssets.splashLogo),
+                height: AppBar().preferredSize.height - AppSize.s18,
+              )),
+          body: ErrorState(StateRendererType.fullScreenErrorState,
+                  AppStrings.noInternetConnection.tr())
+              .getScreenWidget(context),
+        );
+      }
+
+      if (provider.translateNews == null) {
+        return Scaffold(
+          appBar: AppBar(
+              primary: true,
+              title: Image(
+                image: const AssetImage(ImageAssets.splashLogo),
+                height: AppBar().preferredSize.height - AppSize.s18,
+              )),
+          body: LoadingState(
+                  stateRendererType: StateRendererType.fullScreenLoadingState)
+              .getScreenWidget(context),
+        );
+      }
+
+      return Scaffold(
+        appBar: AppBar(
+            primary: true,
+            title: Image(
+              image: const AssetImage(ImageAssets.splashLogo),
+              height: AppBar().preferredSize.height - AppSize.s18,
+            )),
+        body: SafeArea(
+          child: SingleChildScrollView(
+            child: Column(
+              children: [
+                CachedNetworkImage(
+                  height: size.height > size.width
+                      ? size.height * AppSize.s_3
+                      : size.width * AppSize.s_5,
+                  width: double.infinity,
+                  fit: BoxFit.cover,
+                  imageUrl: widget.news.newsPic!.trim(),
+                  placeholder: (context, url) =>
+                      SvgPicture.asset(ImageAssets.imagePhaceholder),
+                  errorWidget: (context, url, error) =>
+                      const Center(child: Icon(Icons.error)),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(AppPadding.p12),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        widget.news.newsSubject!.trim(),
+                        style: Theme.of(context).textTheme.bodyMedium,
                       ),
-                      child: Html(
-                        data: widget.news.newsBudy!.trim(),
+                      Row(
+                        children: [
+                          Icon(
+                            Icons.watch_later_outlined,
+                            color: ColorManager.lightPrimary,
+                            size: AppSize.s14,
+                          ),
+                          SizedBox(
+                            width: AppSize.s4,
+                          ),
+                          Text(
+                            formatDate(widget.news.newsDatetime!),
+                            style:
+                                getMediumStyle(color: ColorManager.lightBlack),
+                          ),
+                        ],
+                      ),
+                      SocialMediaIcons(
+                        newsId: widget.news.newsId,
+                        text: provider
+                            .checkTranslatedNews(provider.translateNews!),
+                        transletedNewsId: provider.TranslatedNewsId(),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(
+                          top: AppPadding.p8,
+                        ),
+                        child: Html(
+                          data: widget.news.newsBudy!.trim(),
+                          onLinkTap: (url, context, attributes, element) =>
+                              launchUrl(Uri.parse(url!),
+                                  mode: LaunchMode.externalApplication),
+                          style: {
+                            'html': Style(
+                                color: ColorManager.black,
+                                fontSize: FontSize(FontSizeManager.s14),
+                                fontFamily: FontConstants.fontFamily,
+                                textAlign: TextAlign.justify),
+                          },
+                        ),
+                      ),
+                      Html(
+                        data: widget.news.newsAuth!.trim(),
                         onLinkTap: (url, context, attributes, element) =>
                             launchUrl(Uri.parse(url!),
                                 mode: LaunchMode.externalApplication),
                         style: {
                           'html': Style(
                               color: ColorManager.black,
-                              fontSize: FontSize(FontSizeManager.s14),
+                              fontSize: FontSize(FontSizeManager.s12),
                               fontFamily: FontConstants.fontFamily,
                               textAlign: TextAlign.justify),
                         },
                       ),
-                    ),
-                    Html(
-                      data: widget.news.newsAuth!.trim(),
-                      onLinkTap: (url, context, attributes, element) =>
-                          launchUrl(Uri.parse(url!),
-                              mode: LaunchMode.externalApplication),
-                      style: {
-                        'html': Style(
-                            color: ColorManager.black,
-                            fontSize: FontSize(FontSizeManager.s12),
-                            fontFamily: FontConstants.fontFamily,
-                            textAlign: TextAlign.justify),
-                      },
-                    ),
-                    SizedBox(
-                      height: AppSize.s12,
-                    ),
-                    Html(
-                      data: widget.news.newsRef!.trim(),
-                      onLinkTap: (url, context, attributes, element) =>
-                          launchUrl(Uri.parse(url!),
-                              mode: LaunchMode.externalApplication),
-                      style: {
-                        'html': Style(
-                            color: ColorManager.black,
-                            fontSize: FontSize(FontSizeManager.s12),
-                            fontFamily: FontConstants.fontFamily,
-                            textAlign: TextAlign.justify),
-                      },
-                    ),
-                  ],
+                      SizedBox(
+                        height: AppSize.s12,
+                      ),
+                      Html(
+                        data: widget.news.newsRef!.trim(),
+                        onLinkTap: (url, context, attributes, element) =>
+                            launchUrl(Uri.parse(url!),
+                                mode: LaunchMode.externalApplication),
+                        style: {
+                          'html': Style(
+                              color: ColorManager.black,
+                              fontSize: FontSize(FontSizeManager.s12),
+                              fontFamily: FontConstants.fontFamily,
+                              textAlign: TextAlign.justify),
+                        },
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
-      ),
-    );
+      );
+    });
   }
 
   String formatDate(String dateStr) {

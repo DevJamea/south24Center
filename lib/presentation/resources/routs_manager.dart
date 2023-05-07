@@ -7,7 +7,6 @@ import 'package:south24/presentation/home/searced_news_details.dart';
 import 'package:south24/presentation/home/search_screen.dart';
 import 'package:south24/presentation/news_details/news_details_view.dart';
 import 'package:south24/presentation/publications/fullscreen_image.dart';
-import 'package:south24/presentation/publications/pdf_viewer.dart';
 import 'package:south24/presentation/publications/show_publications_details.dart';
 import 'package:south24/presentation/resources/strings_mangaer.dart';
 import 'package:south24/presentation/splash/splash_view.dart';
@@ -18,7 +17,6 @@ class Routes {
   static const String detailsRoute = "/details";
   static const String ArabicVersionsDetailsRoute = "/arabicVersionsDetails";
   static const String FullscreenImageRoute = "/fullscreenImage";
-  static const String PdfViewrRoute = "/pdfViewerImage";
   static const String MemberDetailsRoute = "/memberDetailsImage";
   static const String SearchScreenRoute = "/searchScreen";
   static const String SearchedNewsDetails = "/searchedNewsDetails";
@@ -46,11 +44,6 @@ class RouteGenerator {
         var args = settings.arguments;
         return MaterialPageRoute(
           builder: (_) => FullscreenImageView(imageUrl: args as String),
-        );
-      case Routes.PdfViewrRoute:
-        var args = settings.arguments;
-        return MaterialPageRoute(
-          builder: (_) => PdfViewerWidget(url: args as String),
         );
       case Routes.MemberDetailsRoute:
         var args = settings.arguments;

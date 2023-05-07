@@ -17,31 +17,39 @@ class InternationalView extends StatefulWidget {
 
 class _InternationalViewState extends State<InternationalView> {
   @override
+  void initState() {
+    super.initState();
+        final provider = Provider.of<Controller>(context, listen: false);
+ provider.international.isEmpty ? provider.getInternationalNews() : null;
+  }
+  @override
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
     return Consumer<Controller>(builder: (context, provider, child) {
-      provider.international.isEmpty ? provider.getInternationalNews() : null;
+
+      if (!provider.isConnected) {
+        return ErrorState(StateRendererType.fullScreenErrorState,
+                AppStrings.noInternetConnection.tr())
+            .getScreenWidget(context);
+      }
+
+      if (provider.international.isEmpty) {
+        return LoadingState(
+                stateRendererType: StateRendererType.fullScreenLoadingState)
+            .getScreenWidget(context);
+      }
+
       return Scaffold(
-        body: !provider.isConnected
-            ? ErrorState(StateRendererType.fullScreenErrorState,
-                    AppStrings.noInternetConnection.tr())
-                .getScreenWidget(context)
-            : provider.international.isEmpty
-                ? LoadingState(
-                        stateRendererType:
-                            StateRendererType.fullScreenLoadingState)
-                    .getScreenWidget(context)
-                : ListView.builder(
-                    itemCount: provider.international.length,
-                    padding:
-                        const EdgeInsets.symmetric(vertical: AppPadding.p8),
-                    itemBuilder: (context, index) {
-                      return NewsWidgetHorizantal(
-                        size: size,
-                        news: provider.international[index],
-                      );
-                    },
-                  ),
+        body: ListView.builder(
+          itemCount: provider.international.length,
+          padding: const EdgeInsets.symmetric(vertical: AppPadding.p8),
+          itemBuilder: (context, index) {
+            return NewsWidgetHorizontal(
+              size: size,
+              news: provider.international[index],
+            );
+          },
+        ),
       );
     });
   }

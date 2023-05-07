@@ -8,9 +8,7 @@ import 'package:south24/presentation/resources/styles_manager.dart';
 import 'package:south24/presentation/resources/values_manager.dart';
 
 class SearchTextField extends StatelessWidget {
-  SearchTextField({
-    Key? key,
-  }) : super(key: key);
+  const SearchTextField({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -18,13 +16,13 @@ class SearchTextField extends StatelessWidget {
       builder: (context, provider, child) {
         return Container(
           height: AppSize.s50,
-          margin: EdgeInsets.all(AppPadding.p12),
+          margin: const EdgeInsets.all(AppPadding.p12),
           decoration: BoxDecoration(
             color: Colors.white,
             boxShadow: [
               BoxShadow(
                 color: ColorManager.lightGrey,
-                offset: Offset(0, 4),
+                offset: const Offset(0, 4),
                 blurRadius: AppSize.s8,
               ),
             ],
@@ -33,10 +31,18 @@ class SearchTextField extends StatelessWidget {
             children: [
               Expanded(
                 child: TextField(
+                  textInputAction: TextInputAction.search,
+                  onSubmitted: (value) {
+                     final searchQuery = provider.searchController.text.trim();
+                    if (searchQuery.isNotEmpty) {
+                      provider.searchData(searchQuery);
+                      FocusScope.of(context).unfocus();
+                    }
+                  },
                   controller: provider.searchController,
                   style: getMediumStyle(color: ColorManager.black),
                   decoration: InputDecoration(
-                    contentPadding: EdgeInsets.symmetric(horizontal: 16),
+                    contentPadding: const EdgeInsets.symmetric(horizontal: 16),
                     enabledBorder: InputBorder.none,
                     focusedBorder: InputBorder.none,
                     hintText: AppStrings.search.tr(),
@@ -45,23 +51,25 @@ class SearchTextField extends StatelessWidget {
               ),
               Container(
                 height: AppSize.s50,
-                margin: EdgeInsets.all(AppMargin.m4),
+                margin: const EdgeInsets.all(AppMargin.m4),
                 child: ElevatedButton(
                   onPressed: () {
-                    if (provider.searchController.text.trim().isNotEmpty) {
-                      provider
-                          .searchData(provider.searchController.text.trim());
+                    final searchQuery = provider.searchController.text.trim();
+                    if (searchQuery.isNotEmpty) {
+                      provider.searchData(searchQuery);
                       FocusScope.of(context).unfocus();
                     }
                   },
                   style: ButtonStyle(
-                      shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                          RoundedRectangleBorder(
-                    borderRadius: BorderRadius.zero,
-                  ))),
+                    shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                      RoundedRectangleBorder(
+                        borderRadius: BorderRadius.zero,
+                      ),
+                    ),
+                  ),
                   child: Text(
                     AppStrings.searchWord.tr(),
-                    style: TextStyle(fontWeight: FontWeight.bold),
+                    style: const TextStyle(fontWeight: FontWeight.bold),
                   ),
                 ),
               ),

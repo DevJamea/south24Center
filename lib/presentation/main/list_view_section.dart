@@ -8,17 +8,18 @@ import 'package:south24/presentation/resources/styles_manager.dart';
 import 'package:south24/presentation/resources/values_manager.dart';
 
 class ListViewSection extends StatelessWidget {
+  const ListViewSection({
+    Key? key,
+    required this.size,
+    required this.newsList,
+    required this.sectionName,
+    required this.function,
+  }) : super(key: key);
+
   final Size size;
   final List<NewsJson> newsList;
   final String sectionName;
   final Function function;
-
-  const ListViewSection(
-      {super.key,
-      required this.size,
-      required this.newsList,
-      required this.sectionName,
-      required this.function});
 
   @override
   Widget build(BuildContext context) {
@@ -35,9 +36,7 @@ class ListViewSection extends StatelessWidget {
                 style: Theme.of(context).textTheme.displayLarge,
               ),
               InkWell(
-                onTap: () {
-                  function();
-                },
+                onTap: () => function(),
                 child: Text(
                   AppStrings.seeAll.tr(),
                   style: getSemiBoldStyle(color: ColorManager.grey),
@@ -46,9 +45,7 @@ class ListViewSection extends StatelessWidget {
             ],
           ),
         ),
-        const SizedBox(
-          height: AppSize.s4,
-        ),
+        const SizedBox(height: AppSize.s4),
         SizedBox(
           height: size.width * AppSize.s_4,
           child: ListView.builder(
@@ -59,19 +56,20 @@ class ListViewSection extends StatelessWidget {
               return Padding(
                 padding: const EdgeInsets.symmetric(horizontal: AppPadding.p4),
                 child: ClipRRect(
-                    borderRadius: BorderRadius.circular(AppSize.s4),
-                    child: NewsWidget(
-                      height: size.width * AppSize.s_4,
-                      width: size.width * AppSize.s_5,
-                      news: newsList[index],
-                      textOverFlow: true,
-                      padding: AppPadding.p4,
-                      maxlines: 2,
-                    )),
+                  borderRadius: BorderRadius.circular(AppSize.s4),
+                  child: NewsWidget(
+                    height: size.width * AppSize.s_4,
+                    width: size.width * AppSize.s_5,
+                    news: newsList[index],
+                    textOverFlow: true,
+                    padding: AppPadding.p4,
+                    maxLines: 2,
+                  ),
+                ),
               );
             },
           ),
-        )
+        ),
       ],
     );
   }

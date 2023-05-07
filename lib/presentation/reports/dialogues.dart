@@ -16,27 +16,37 @@ class DialoguesView extends StatefulWidget {
 }
 
 class _DialoguesViewState extends State<DialoguesView> {
+
+  @override
+  void initState() {
+    super.initState();
+    final provider = Provider.of<Controller>(context, listen: false);
+    provider.dialogues.isEmpty ? provider.getDialoguesNews() : null;
+  }
   @override
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
     return Consumer<Controller>(builder: (context, provider, child) {
-      provider.dialogues.isEmpty ? provider.getDialoguesNews() : null;
+      
+      if (!provider.isConnected) {
+        return ErrorState(StateRendererType.fullScreenErrorState,
+                AppStrings.noInternetConnection.tr())
+            .getScreenWidget(context);
+      }
+
+      if (provider.dialogues.isEmpty) {
+        return LoadingState(
+                stateRendererType: StateRendererType.fullScreenLoadingState)
+            .getScreenWidget(context);
+      }
+      
       return Scaffold(
-        body: !provider.isConnected
-            ? ErrorState(StateRendererType.fullScreenErrorState,
-                    AppStrings.noInternetConnection.tr())
-                .getScreenWidget(context)
-            : provider.dialogues.isEmpty
-                ? LoadingState(
-                        stateRendererType:
-                            StateRendererType.fullScreenLoadingState)
-                    .getScreenWidget(context)
-                : ListView.builder(
+        body: ListView.builder(
                     itemCount: provider.dialogues.length,
                     padding:
                         const EdgeInsets.symmetric(vertical: AppPadding.p8),
                     itemBuilder: (context, index) {
-                      return NewsWidgetHorizantal(
+                      return NewsWidgetHorizontal(
                         size: size,
                         news: provider.dialogues[index],
                       );
