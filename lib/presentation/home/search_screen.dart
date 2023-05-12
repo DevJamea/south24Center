@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:south24/app/provider_controller.dart';
@@ -6,6 +7,7 @@ import 'package:south24/presentation/common/state_renderer_impl.dart';
 import 'package:south24/presentation/home/search_news_widget.dart';
 import 'package:south24/presentation/home/search_text_field.dart';
 import 'package:south24/presentation/resources/assets_manager.dart';
+import 'package:south24/presentation/resources/strings_mangaer.dart';
 import 'package:south24/presentation/resources/values_manager.dart';
 
 class SearchScreen extends StatefulWidget {
@@ -56,15 +58,25 @@ class _SearchScreenState extends State<SearchScreen> {
   }
 
   Widget _buildSearchResults(Size size, Controller provider) {
+
+    if (!provider.isConnected) {
+        return NoConnectionState(StateRendererType.fullScreenNoConnectionState,
+                  AppStrings.noInternetConnection.tr())
+              .getScreenWidget(context);
+      }
+
     if (provider.searchList == null) {
       return LoadingState(
         stateRendererType: StateRendererType.fullScreenLoadingState,
       ).getScreenWidget(context);
-    } else if (provider.searchList!.isEmpty) {
+    } 
+    
+    if (provider.searchList!.isEmpty) {
       return NoDataState(
         stateRendererType: StateRendererType.fullScreenNoDataState,
       ).getScreenWidget(context);
-    } else {
+    } 
+
       return ListView.builder(
         itemCount: provider.searchList!.length,
         itemBuilder: (context, index) {
@@ -75,5 +87,5 @@ class _SearchScreenState extends State<SearchScreen> {
         },
       );
     }
-  }
+    
 }

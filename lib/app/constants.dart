@@ -1,3 +1,11 @@
+import 'package:easy_localization/easy_localization.dart';
+import 'package:flutter/material.dart';
+import 'package:south24/app/provider_controller.dart';
+import 'package:south24/presentation/common/state_renderer.dart';
+import 'package:south24/presentation/resources/strings_mangaer.dart';
+
+import '../presentation/common/state_renderer_impl.dart';
+
 class Constants {
   //arabic version
   static String analyticsAr = "https://south24.net/news/json/14.json";
@@ -12,7 +20,7 @@ class Constants {
   static String southTv = "https://south24.net/news/json/ytube.json";
   static String twitterAr = "https://south24.net/news/json/1_twt.json";
   static String about = "https://south24.net/news/json/16.json";
- //arabic engilsh
+  //arabic engilsh
   static String analyticsEn = "https://south24.net/news/json/15.json";
   static String reports = "https://south24.net/news/json/6.json";
   static String publications = "https://south24.net/news/json/18.json";
@@ -22,12 +30,16 @@ class Constants {
   static const String empty = "";
 
   static const String search = "https://south24.net/news/json/search.php?q=";
-  static const String viewNewsById = "https://www.south24.net/news/news.php?nid=";
-  static const String facebookShareLink = "https://www.facebook.com/sharer/sharer.php?u=";
-  static const String twitterShareLink = "https://twitter.com/intent/tweet?url=";
+  static const String viewNewsById =
+      "https://www.south24.net/news/news.php?nid=";
+  static const String facebookShareLink =
+      "https://www.facebook.com/sharer/sharer.php?u=";
+  static const String twitterShareLink =
+      "https://twitter.com/intent/tweet?url=";
   static const String whatsappShareLink = "whatsapp://send?text=";
   static const String telegramShareLink = "https://t.me/share/url?url=";
-  static const String emailShareLink = "mailto:?subject=Check out this news!&body=";
-  static const String getNewsDetails = "https://south24.net/news/json/newsbyid.php?id=";
-
+  static const String emailShareLink =
+      "mailto:?subject=Check out this news!&body=";
+  static const String getNewsDetails =
+      "https://south24.net/news/json/newsbyid.php?id=";
 }

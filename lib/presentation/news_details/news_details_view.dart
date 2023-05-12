@@ -47,7 +47,7 @@ class _NewsDetailsViewState extends State<NewsDetailsView> {
                 image: const AssetImage(ImageAssets.splashLogo),
                 height: AppBar().preferredSize.height - AppSize.s18,
               )),
-          body: ErrorState(StateRendererType.fullScreenErrorState,
+          body: NoConnectionState(StateRendererType.fullScreenNoConnectionState,
                   AppStrings.noInternetConnection.tr())
               .getScreenWidget(context),
         );

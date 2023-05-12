@@ -142,34 +142,12 @@ class _ShowPublicationsDetailsState extends State<ShowPublicationsDetails> {
     return Padding(
       padding: const EdgeInsets.symmetric(
           horizontal: AppPadding.p16, vertical: AppPadding.p8),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: [
-          ElevatedButton(
-            onPressed: () async {
-              launchUrl(Uri.parse(widget.arabicVersions.docPdf!),
-                  mode: LaunchMode.externalApplication);
-            },
-            child: Text(AppStrings.View.tr()),
-          ),
-          ElevatedButton(
-            onPressed: () async {
-              var storagePermissionStatus = await Permission.storage.status;
-              if (storagePermissionStatus.isGranted) {
-                provider.downloadPdfFile(widget.arabicVersions.docPdf!);
-              } else {
-                var result = await Permission.storage.request();
-                if (result.isGranted) {
-                  provider.downloadPdfFile(widget.arabicVersions.docPdf!);
-                } else {
-                  // Permission has been denied
-                  // Show an error message or handle the situation accordingly
-                }
-              }
-            },
-            child: Text(AppStrings.Download.tr()),
-          )
-        ],
+      child: ElevatedButton(
+        onPressed: () async {
+          launchUrl(Uri.parse(widget.arabicVersions.docPdf!),
+              mode: LaunchMode.externalApplication);
+        },
+        child: Text(AppStrings.View.tr()),
       ),
     );
   }

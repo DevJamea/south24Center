@@ -18,6 +18,33 @@ class SubPublicationsView extends StatefulWidget {
 }
 
 class _SubPublicationsViewState extends State<SubPublicationsView> {
+  late final Controller provider;
+
+  @override
+  void initState() {
+    super.initState();
+
+    provider = context.read<Controller>();
+
+    if (provider.isArabic()) {
+      if (provider.arabicVersions == null) {
+        provider.getArarbicNews();
+      } else {
+        if (provider.arabicVersions!.isEmpty) {
+          provider.getArarbicNews();
+        }
+      }
+    } else {
+      if (provider.publications == null) {
+        provider.getPublicationsNews();
+      } else {
+        if (provider.publications!.isEmpty) {
+          provider.getPublicationsNews();
+        }
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
@@ -26,25 +53,45 @@ class _SubPublicationsViewState extends State<SubPublicationsView> {
 
     return Consumer<Controller>(
       builder: (context, provider, child) {
-        if (provider.isArabic()) {
-          if (provider.arabicVersions.isEmpty) {
-            provider.getArabicVersionsNews();
-          }
-        } else {
-          if (provider.publications.isEmpty) {
-            provider.getPublicationsNews();
-          }
-        }
         if (!provider.isConnected) {
-          return ErrorState(StateRendererType.fullScreenErrorState,
+          return NoConnectionState(
+                  StateRendererType.fullScreenNoConnectionState,
                   AppStrings.noInternetConnection.tr())
               .getScreenWidget(context);
         }
 
-        if (provider.checkPublicationsNullable(context)) {
-          return LoadingState(
-                  stateRendererType: StateRendererType.fullScreenLoadingState)
-              .getScreenWidget(context);
+        if (provider.isArabic()) {
+          if (provider.arabicVersions == null) {
+            return ErrorState(
+                stateRendererType: StateRendererType.fullScreenErorr,
+                retryActionFunction: () {
+                  provider.arabicVersions = [];
+                  provider.notifyListeners();
+                  provider.getArabicVersionsNews();
+                }).getScreenWidget(context);
+          }
+
+          if (provider.arabicVersions!.isEmpty) {
+            return LoadingState(
+                    stateRendererType: StateRendererType.fullScreenLoadingState)
+                .getScreenWidget(context);
+          }
+        } else {
+          if (provider.publications == null) {
+            return ErrorState(
+                stateRendererType: StateRendererType.fullScreenErorr,
+                retryActionFunction: () {
+                  provider.publications = [];
+                  provider.notifyListeners();
+                  provider.getPublicationsNews();
+                }).getScreenWidget(context);
+          }
+
+          if (provider.publications!.isEmpty) {
+            return LoadingState(
+                    stateRendererType: StateRendererType.fullScreenLoadingState)
+                .getScreenWidget(context);
+          }
         }
 
         return Scaffold(
@@ -58,14 +105,14 @@ class _SubPublicationsViewState extends State<SubPublicationsView> {
                     size.height / 2 + AppSize.s8 + textStyle.fontSize!,
               ),
               itemCount: provider.isArabic()
-                  ? provider.arabicVersions.length
-                  : provider.publications.length,
+                  ? provider.arabicVersions!.length
+                  : provider.publications!.length,
               padding: const EdgeInsets.symmetric(vertical: AppPadding.p8),
               itemBuilder: (context, index) {
                 return PublicationsWidget(
                   versions: provider.isArabic()
-                      ? provider.arabicVersions[index]
-                      : provider.publications[index],
+                      ? provider.arabicVersions![index]
+                      : provider.publications![index],
                 );
               },
             ),

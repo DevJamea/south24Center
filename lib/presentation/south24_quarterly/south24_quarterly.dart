@@ -18,15 +18,23 @@ class South24QuarterlyView extends StatefulWidget {
 }
 
 class _South24QuarterlyViewState extends State<South24QuarterlyView> {
+  late final Controller provider;
 
   @override
   void initState() {
     super.initState();
-    final provider = Provider.of<Controller>(context, listen: false);
-  if (provider.quarterly.isEmpty) {
-          provider.getQuarterlyNews();
-        }
+
+    provider = context.read<Controller>();
+
+    if (provider.quarterly == null) {
+      provider.getQuarterlyNews();
+    } else {
+      if (provider.quarterly!.isEmpty) {
+        provider.getQuarterlyNews();
+      }
+    }
   }
+
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
@@ -35,18 +43,27 @@ class _South24QuarterlyViewState extends State<South24QuarterlyView> {
 
     return Consumer<Controller>(
       builder: (context, provider, child) {
-
         if (!provider.isConnected) {
-          return ErrorState(
-            StateRendererType.fullScreenErrorState,
-            AppStrings.noInternetConnection.tr(),
-          ).getScreenWidget(context);
+          return NoConnectionState(
+                  StateRendererType.fullScreenNoConnectionState,
+                  AppStrings.noInternetConnection.tr())
+              .getScreenWidget(context);
         }
 
-        if (provider.quarterly.isEmpty) {
+        if (provider.quarterly == null) {
+          return ErrorState(
+              stateRendererType: StateRendererType.fullScreenErorr,
+              retryActionFunction: () {
+                provider.quarterly = [];
+                provider.notifyListeners();
+                provider.getQuarterlyNews();
+              }).getScreenWidget(context);
+        }
+
+        if (provider.quarterly!.isEmpty) {
           return LoadingState(
-            stateRendererType: StateRendererType.fullScreenLoadingState,
-          ).getScreenWidget(context);
+                  stateRendererType: StateRendererType.fullScreenLoadingState)
+              .getScreenWidget(context);
         }
 
         return Scaffold(
@@ -59,11 +76,11 @@ class _South24QuarterlyViewState extends State<South24QuarterlyView> {
               mainAxisExtent:
                   size.height / 2 + AppSize.s8 + textStyle.fontSize!,
             ),
-            itemCount: provider.quarterly.length,
+            itemCount: provider.quarterly!.length,
             padding: const EdgeInsets.symmetric(vertical: AppPadding.p8),
             itemBuilder: (context, index) {
               return PublicationsWidget(
-                versions: provider.quarterly[index],
+                versions: provider.quarterly![index],
               );
             },
           ),

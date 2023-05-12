@@ -51,13 +51,13 @@ class SectionNameWidget extends StatelessWidget {
                   crossAxisCount: 2,
                   crossAxisSpacing: AppSize.s12,
                   mainAxisSpacing: AppSize.s12),
-              itemCount: provider.about
+              itemCount: provider.about!
                   .where((element) => element.newsTags == tag)
                   .toList()
                   .length,
               itemBuilder: (context, index) {
                 return MemberCard(
-                  newsJson: provider.about
+                  newsJson: provider.about!
                       .where((element) => element.newsTags == tag)
                       .toList()
                       .reversed

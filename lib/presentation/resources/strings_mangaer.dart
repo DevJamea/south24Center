@@ -75,4 +75,8 @@ class AppStrings {
   static const search = "search";
   static const searchWord = "searchWord";
 
+  static const retry = "retry";
+  static const somtingWrong = "somtingWrong";
+
+
 }

@@ -1,6 +1,7 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:south24/app/constants.dart';
 import 'package:south24/app/provider_controller.dart';
 import 'package:south24/presentation/common/state_renderer.dart';
 import 'package:south24/presentation/common/state_renderer_impl.dart';
@@ -16,43 +17,60 @@ class StudiesView extends StatefulWidget {
 }
 
 class _StudiesViewState extends State<StudiesView> {
+  late final Controller provider;
 
   @override
   void initState() {
     super.initState();
-    final provider = Provider.of<Controller>(context, listen: false);
-    if (provider.stdudies.isEmpty) {
-          provider.getStdudiesNews();
-        }
+
+    provider = context.read<Controller>();
+    if (provider.stdudies == null) {
+      provider.getStdudiesNews();
+    } else {
+      if (provider.stdudies!.isEmpty) {
+        provider.getStdudiesNews();
+      }
+    }
   }
+
   @override
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
     return Consumer<Controller>(
       builder: (context, provider, child) {
-        
 
+        
         if (!provider.isConnected) {
-          return ErrorState(
-            StateRendererType.fullScreenErrorState,
-            AppStrings.noInternetConnection.tr(),
-          ).getScreenWidget(context);
+          return NoConnectionState(
+                  StateRendererType.fullScreenNoConnectionState,
+                  AppStrings.noInternetConnection.tr())
+              .getScreenWidget(context);
         }
 
-        if (provider.stdudies.isEmpty) {
+        if (provider.stdudies == null) {
+          return ErrorState(
+              stateRendererType: StateRendererType.fullScreenErorr,
+              retryActionFunction: () {
+                provider.stdudies = [];
+                provider.notifyListeners();
+                provider.getStdudiesNews();
+              }).getScreenWidget(context);
+        }
+
+        if (provider.stdudies!.isEmpty) {
           return LoadingState(
-            stateRendererType: StateRendererType.fullScreenLoadingState,
-          ).getScreenWidget(context);
+                  stateRendererType: StateRendererType.fullScreenLoadingState)
+              .getScreenWidget(context);
         }
 
         return Scaffold(
           body: ListView.builder(
-            itemCount: provider.stdudies.length,
+            itemCount: provider.stdudies!.length,
             padding: const EdgeInsets.symmetric(vertical: AppPadding.p8),
             itemBuilder: (context, index) {
               return NewsWidgetHorizontal(
                 size: size,
-                news: provider.stdudies[index],
+                news: provider.stdudies![index],
               );
             },
           ),

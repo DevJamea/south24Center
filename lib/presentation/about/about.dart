@@ -24,58 +24,81 @@ class _AboutViewState extends State<AboutView> {
   @override
   void initState() {
     super.initState();
+
     provider = context.read<Controller>();
-    if (provider.about.isEmpty) provider.getMembers();
+
+    if (provider.about == null) {
+      provider.getMembers();
+    } else {
+      if (provider.about!.isEmpty) {
+        provider.getMembers();
+      }
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Consumer<Controller>(
       builder: (context, provider, child) {
+        
+        if (!provider.isConnected) {
+          return NoConnectionState(
+                  StateRendererType.fullScreenNoConnectionState,
+                  AppStrings.noInternetConnection.tr())
+              .getScreenWidget(context);
+        }
+
+        if (provider.about == null) {
+          return ErrorState(
+              stateRendererType: StateRendererType.fullScreenErorr,
+              retryActionFunction: () {
+                provider.about = [];
+                provider.notifyListeners();
+                provider.getMembers();
+              }).getScreenWidget(context);
+        }
+
+        if (provider.about!.isEmpty) {
+          return LoadingState(
+                  stateRendererType: StateRendererType.fullScreenLoadingState)
+              .getScreenWidget(context);
+        }
+
         return Scaffold(
-          body: !provider.isConnected
-              ? ErrorState(
-                  StateRendererType.fullScreenErrorState,
-                  AppStrings.noInternetConnection.tr(),
-                ).getScreenWidget(context)
-              : provider.about.isEmpty
-                  ? LoadingState(
-                      stateRendererType: StateRendererType.fullScreenLoadingState,
-                    ).getScreenWidget(context)
-                  : SingleChildScrollView(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const Padding(
-                            padding: EdgeInsets.all(AppPadding.p12),
-                            child: FirstSectionAbout(),
-                          ),
-                          SectionNameWidget(
-                            sectionName: AppStrings.directors.tr(),
-                            tag: "1",
-                          ),
-                          SectionNameWidget(
-                            sectionName: AppStrings.editorialTeam.tr(),
-                            tag: "2",
-                          ),
-                          SectionNameWidget(
-                            sectionName: AppStrings.correspondents.tr(),
-                            tag: "3",
-                          ),
-                          SectionNameWidget(
-                            sectionName: AppStrings.consultants.tr(),
-                            tag: "4",
-                          ),
-                          SectionNameWidget(
-                            sectionName: AppStrings.researchersAndExperts.tr(),
-                            tag: "5",
-                          ),
-                          const Divider(),
-                          const LastSection(),
-                          const FooterView(),
-                        ],
-                      ),
-                    ),
+          body: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Padding(
+                  padding: EdgeInsets.all(AppPadding.p12),
+                  child: FirstSectionAbout(),
+                ),
+                SectionNameWidget(
+                  sectionName: AppStrings.directors.tr(),
+                  tag: "1",
+                ),
+                SectionNameWidget(
+                  sectionName: AppStrings.editorialTeam.tr(),
+                  tag: "2",
+                ),
+                SectionNameWidget(
+                  sectionName: AppStrings.correspondents.tr(),
+                  tag: "3",
+                ),
+                SectionNameWidget(
+                  sectionName: AppStrings.consultants.tr(),
+                  tag: "4",
+                ),
+                SectionNameWidget(
+                  sectionName: AppStrings.researchersAndExperts.tr(),
+                  tag: "5",
+                ),
+                const Divider(),
+                const LastSection(),
+                const FooterView(),
+              ],
+            ),
+          ),
         );
       },
     );

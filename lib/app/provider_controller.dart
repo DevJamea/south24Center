@@ -1,7 +1,6 @@
-import 'dart:developer';
 import 'dart:io';
-
 import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_phoenix/flutter_phoenix.dart';
 import 'package:south24/app/app_prefs.dart';
@@ -31,6 +30,7 @@ class Controller extends ChangeNotifier {
   YoutubePlayerController? youtubePlayerController;
   String? selectedYoutube;
   String? pdfFilePath;
+
   TranslatedNews? searchedNews;
   TranslatedNews? translateNews;
   TranslatedNews? translatedNews;
@@ -62,23 +62,27 @@ class Controller extends ChangeNotifier {
     AppStrings.language,
   ];
 
-  List<NewsJson> analytics = [];
-  List<NewsJson> editorial = [];
-  List<NewsJson> specialReports = [];
-  List<NewsJson> international = [];
-  List<NewsJson> arabic = [];
-  List<NewsJson> dialogues = [];
-  List<NewsJson> stdudies = [];
-  List<ArabicVersions> arabicVersions = [];
-  List<Infographics> infographic = [];
-  List<YoutubeModel> youtube = [];
-  List<TwitterModel> twitter = [];
-  List<NewsJson> about = [];
+  List<String> EnTopicId = ["6", "15", "24", "25"];
+
+  List<NewsJson>? analytics = [];
+  List<NewsJson>? editorial = [];
+  List<NewsJson>? specialReports = [];
+  List<NewsJson>? international = [];
+  List<NewsJson>? arabic = [];
+  List<NewsJson>? dialogues = [];
+  List<NewsJson>? stdudies = [];
+  List<NewsJson>? reports = [];
+  List<NewsJson>? about = [];
   List<NewsJson>? searchList = [];
 
-  List<NewsJson> reports = [];
-  List<ArabicVersions> publications = [];
-  List<ArabicVersions> quarterly = [];
+  List<ArabicVersions>? publications = [];
+  List<ArabicVersions>? quarterly = [];
+  List<ArabicVersions>? arabicVersions = [];
+
+  List<Infographics>? infographic = [];
+  List<YoutubeModel>? youtube = [];
+
+  List<TwitterModel> twitter = [];
 
   // return tabs list based language
 
@@ -143,42 +147,6 @@ class Controller extends ChangeNotifier {
 
   // check list
 
-  bool checkListsNullable(BuildContext context) {
-    if (isArabic()) {
-      if (specialReports.isEmpty ||
-          analytics.isEmpty ||
-          international.isEmpty ||
-          arabic.isEmpty ||
-          arabicVersions.isEmpty) {
-        return true;
-      } else {
-        return false;
-      }
-    } else {
-      if (reports.isEmpty || analytics.isEmpty || publications.isEmpty) {
-        return true;
-      } else {
-        return false;
-      }
-    }
-  }
-
-  bool checkPublicationsNullable(BuildContext context) {
-    if (isArabic()) {
-      if (arabicVersions.isEmpty) {
-        return true;
-      } else {
-        return false;
-      }
-    } else {
-      if (publications.isEmpty) {
-        return true;
-      } else {
-        return false;
-      }
-    }
-  }
-
   bool checkTwittersNullable(BuildContext context) {
     if (twitter.where((tweet) => tweet.hours! < 2).isEmpty) {
       return true;
@@ -189,12 +157,8 @@ class Controller extends ChangeNotifier {
 
 // get data funcations
 
-  Future<List<NewsJson>> base(String url) async {
-    try {
-      return await DataSource.instance.fetchNewsData(url);
-    } on Exception catch (e) {
-      throw Exception('Failed to load data');
-    }
+  Future<List<NewsJson>?> base(String url) async {
+    return await DataSource.instance.fetchNewsData(url);
   }
 
   searchData(String query) async {
@@ -247,15 +211,7 @@ class Controller extends ChangeNotifier {
   }
 
   getArarbicNews() async {
-    try {
-      log("arabic news");
-      exceotionOccured = false;
-      notifyListeners();
-      arabic = await base(Constants.arabic);
-    } on Exception catch (e) {
-      log("arabic news exception");
-      exceotionOccured = true;
-    }
+    arabic = await base(Constants.arabic);
     notifyListeners();
   }
 
@@ -323,7 +279,9 @@ class Controller extends ChangeNotifier {
   Future<void> getYoutubeData() async {
     youtube = await DataSource.instance.fetchYoutubeData(Constants.southTv);
 
-    getYoutubeVideoPlayer(youtube[0].ytVideoId!);
+    if (youtube != null) {
+      getYoutubeVideoPlayer(youtube![0].ytVideoId!);
+    }
     notifyListeners();
   }
 
@@ -334,10 +292,6 @@ class Controller extends ChangeNotifier {
             YoutubePlayerFlags(autoPlay: true, loop: true, hideControls: true));
     selectedYoutube = videoId;
     notifyListeners();
-  }
-
-  downloadPdfFile(String url) async {
-    await DataSource.instance.loadPDF(url);
   }
 
   getMembers() async {
@@ -398,7 +352,7 @@ class Controller extends ChangeNotifier {
     }
   }
 
-   String? searchedNewsId() {
+  String? searchedNewsId() {
     if (searchedNews!.link_ar != null) {
       return searchedNews!.link_ar;
     } else if (searchedNews!.link_en != null) {
@@ -409,17 +363,92 @@ class Controller extends ChangeNotifier {
   }
 
   showBottomSheet(Widget widget) {
+    var height = MediaQuery.of(navKey.currentContext!).size.height;
     showModalBottomSheet(
       context: navKey.currentContext!,
       isScrollControlled: true,
+      isDismissible: true,
+      elevation: AppSize.s12,
       shape: RoundedRectangleBorder(
           borderRadius:
               BorderRadius.vertical(top: Radius.circular(AppSize.s12))),
       backgroundColor: ColorManager.white,
       useSafeArea: true,
       builder: (context) {
-        return widget;
+        return Container(
+            height: height - AppSize.s120,
+            child: Column(
+              children: [
+                Container(
+                  width: AppSize.s100,
+                  margin: EdgeInsets.symmetric(vertical: AppMargin.m8),
+                  height: AppSize.s8,
+                  decoration: BoxDecoration(
+                      color: ColorManager.lightGrey,
+                      borderRadius: BorderRadius.horizontal(
+                          right: Radius.circular(AppSize.s8),
+                          left: Radius.circular(AppSize.s8))),
+                ),
+                Expanded(child: widget),
+              ],
+            ));
       },
     );
+  }
+
+   String formatDate(String dateStr , String language) {
+    String weekday = DateFormat('E').format(DateTime.parse(dateStr));
+    String day = dateStr.substring(8, 10);
+    String month = dateStr.substring(5, 7);
+    String year = dateStr.substring(0, 4);
+    String hour = dateStr.substring(11, 13);
+    String minute = dateStr.substring(14, 16);
+    String meridiemAr = int.parse(hour) < 12 ? 'صباحًا' : 'مساءً';
+    String meridiemEn = int.parse(hour) < 12 ? 'AM' : 'PM';
+
+    String _getDayEn(String day) {
+      final dayNames = {
+        'الأحد': 'Sun',
+        'الاثنين': 'Mon',
+        'الثلاثاء': 'Tue',
+        'الأربعاء': 'Wed',
+        'الخميس': 'Thu',
+        'الجمعة': 'Fri',
+        'السبت': 'Sat',
+      };
+      print(weekday);
+      return dayNames[day] ?? weekday;
+    }
+
+    String _getDayAr(String day) {
+      final dayNames = {
+        'Sun': 'الأحد',
+        'Mon': 'الاثنين',
+        'Tue': 'الثلاثاء',
+        'Wed': 'الأربعاء',
+        'Thu': 'الخميس',
+        'Fri': 'الجمعة',
+        'Sat': 'السبت',
+      };
+      return dayNames[day] ?? weekday;
+    }
+
+    String _getFormattedHour(String hourStr) {
+      int hour = int.parse(hourStr);
+      if (hour > 12) {
+        hour -= 12;
+      }
+      return hour.toString().padLeft(2, '0');
+    }
+
+    if (language == AppStrings.arabicLanguage) {
+      String time =
+          "${_getDayAr(weekday)}، $day-$month-$year الساعة ${_getFormattedHour(hour.trim())}:${minute.trim()} $meridiemAr بتوقيت عدن";
+      return time;
+    } else {
+      String time =
+          "${_getDayEn(weekday)}, $day-$month-$year  ${_getFormattedHour(hour.trim())}:${minute.trim()} $meridiemEn, Aden";
+      return time;
+    }
   }
 }

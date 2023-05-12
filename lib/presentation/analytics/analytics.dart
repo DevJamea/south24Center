@@ -16,31 +16,67 @@ class AnalyticsView extends StatefulWidget {
 }
 
 class _AnalyticsViewState extends State<AnalyticsView> {
+  late final Controller provider;
+
+  @override
+  void initState() {
+    super.initState();
+
+    provider = context.read<Controller>();
+
+    if (provider.analytics == null) {
+      provider.isArabic()
+          ? provider.getAnalyticsArNews()
+          : provider.getAnalyticsEnNews();
+    } else {
+      if (provider.analytics!.isEmpty) {
+        provider.isArabic()
+            ? provider.getAnalyticsArNews()
+            : provider.getAnalyticsEnNews();
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
     return Consumer<Controller>(builder: (context, provider, child) {
+      
+      if (!provider.isConnected) {
+        return NoConnectionState(StateRendererType.fullScreenNoConnectionState,
+                AppStrings.noInternetConnection.tr())
+            .getScreenWidget(context);
+      }
+
+      if (provider.analytics == null) {
+        return ErrorState(
+            stateRendererType: StateRendererType.fullScreenErorr,
+            retryActionFunction: () {
+              provider.analytics = [];
+              provider.notifyListeners();
+              provider.isArabic()
+                  ? provider.getAnalyticsArNews()
+                  : provider.getAnalyticsEnNews();
+            }).getScreenWidget(context);
+      }
+
+      if (provider.analytics!.isEmpty) {
+        return LoadingState(
+                stateRendererType: StateRendererType.fullScreenLoadingState)
+            .getScreenWidget(context);
+      }
+
       return Scaffold(
-        body: !provider.isConnected
-            ? ErrorState(StateRendererType.fullScreenErrorState,
-                    AppStrings.noInternetConnection.tr())
-                .getScreenWidget(context)
-            : provider.analytics.isEmpty
-                ? LoadingState(
-                        stateRendererType:
-                            StateRendererType.fullScreenLoadingState)
-                    .getScreenWidget(context , )
-                : ListView.builder(
-                    itemCount:provider.analytics.length,
-                    padding:
-                        const EdgeInsets.symmetric(vertical: AppPadding.p8),
-                    itemBuilder: (context, index) {
-                      return NewsWidgetHorizontal(
-                        size: size,
-                        news: provider.analytics[index],
-                      );
-                    },
-                  ),
+        body: ListView.builder(
+          itemCount: provider.analytics!.length,
+          padding: const EdgeInsets.symmetric(vertical: AppPadding.p8),
+          itemBuilder: (context, index) {
+            return NewsWidgetHorizontal(
+              size: size,
+              news: provider.analytics![index],
+            );
+          },
+        ),
       );
     });
   }

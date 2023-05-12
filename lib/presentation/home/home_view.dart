@@ -34,11 +34,11 @@ class _HomeViewState extends State<HomeView>
     super.initState();
     final provider = Provider.of<Controller>(context, listen: false);
     _tabController = TabController(length: provider.tabsAr.length, vsync: this);
-     if (!provider.isArabic()) {
-        provider.twitter.isEmpty ? provider.getTwitterEnNews() : null;
-      } else {
-        provider.twitter.isEmpty ? provider.getTwitterArNews() : null;
-      }
+    if (!provider.isArabic()) {
+      provider.twitter.isEmpty ? provider.getTwitterEnNews() : null;
+    } else {
+      provider.twitter.isEmpty ? provider.getTwitterArNews() : null;
+    }
   }
 
   @override
@@ -52,7 +52,6 @@ class _HomeViewState extends State<HomeView>
     var size = MediaQuery.of(context).size;
     _tabController?.animateTo(Provider.of<Controller>(context).curretnTab);
     return Consumer<Controller>(builder: (context, provider, widget) {
-     
       return DefaultTabController(
           length: provider.tabsAr.length,
           child: Scaffold(
@@ -108,38 +107,48 @@ class _HomeViewState extends State<HomeView>
                 : provider.checkTwittersNullable(context)
                     ? null
                     : SouthBottomAppBar(size: size),
-            body: SafeArea(
-              child: PageView.builder(
-                physics: const NeverScrollableScrollPhysics(),
-                itemCount: provider.getTabsNames(context).length,
-                controller: provider.pageController,
-                itemBuilder: (context, index) {
-                  if (index == 0 && provider.isArabic()) {
-                    return const MianViewAr();
-                  } else if (index == 0 && !provider.isArabic()) {
-                    return const MianViewEn();
-                  } else if (index == 1) {
-                    return const AnalyticsView();
-                  } else if (index == 2) {
-                    return const ReportsView();
-                  } else if (index == 3) {
-                    return const BreakingNewsView();
-                  } else if (index == 4) {
-                    return provider.isArabic()
-                        ? const StudiesView()
-                        : const PublicationsView();
-                  } else if (index == 5) {
-                    return provider.isArabic()
-                        ? const PublicationsView()
-                        : const South24TV();
-                  } else if (index == 6) {
-                    return provider.isArabic()
-                        ? const South24TV()
-                        : const South24QuarterlyView();
-                  } else {
-                    return const AboutView();
-                  }
-                },
+            body: WillPopScope(
+              onWillPop: () async {
+                if (provider.curretnTab == 0) {
+                  return true;
+                } else {
+                  provider.animateToPage(0);
+                  return false;
+                }
+              },
+              child: SafeArea(
+                child: PageView.builder(
+                  physics: const NeverScrollableScrollPhysics(),
+                  itemCount: provider.getTabsNames(context).length,
+                  controller: provider.pageController,
+                  itemBuilder: (context, index) {
+                    if (index == 0 && provider.isArabic()) {
+                      return const MianViewAr();
+                    } else if (index == 0 && !provider.isArabic()) {
+                      return const MianViewEn();
+                    } else if (index == 1) {
+                      return const AnalyticsView();
+                    } else if (index == 2) {
+                      return const ReportsView();
+                    } else if (index == 3) {
+                      return const BreakingNewsView();
+                    } else if (index == 4) {
+                      return provider.isArabic()
+                          ? const StudiesView()
+                          : const PublicationsView();
+                    } else if (index == 5) {
+                      return provider.isArabic()
+                          ? const PublicationsView()
+                          : const South24TV();
+                    } else if (index == 6) {
+                      return provider.isArabic()
+                          ? const South24TV()
+                          : const South24QuarterlyView();
+                    } else {
+                      return const AboutView();
+                    }
+                  },
+                ),
               ),
             ),
           ));

@@ -39,8 +39,8 @@ class _BreakingNewsViewState extends State<BreakingNewsView> {
         return Scaffold(
           body: provider.isConnected
               ? _buildTwitterList(provider)
-              : ErrorState(
-                  StateRendererType.fullScreenErrorState,
+              : NoConnectionState(
+                  StateRendererType.fullScreenNoConnectionState,
                   AppStrings.noInternetConnection.tr(),
                 ).getScreenWidget(context),
         );

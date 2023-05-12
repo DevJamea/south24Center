@@ -1,23 +1,39 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:south24/domain/modela/news_model.dart';
+import 'package:south24/presentation/common/state_renderer.dart';
+import 'package:south24/presentation/common/state_renderer_impl.dart';
 import 'package:south24/presentation/main/news_widget.dart';
 import 'package:south24/presentation/resources/color_manager.dart';
 import 'package:south24/presentation/resources/values_manager.dart';
 
 class ImageSlider extends StatelessWidget {
-  
- const ImageSlider({
+  const ImageSlider({
     super.key,
     required this.size,
-    required this.newsList,
+    required this.newsList, required this.retryButtonFunction,
   });
 
   final Size size;
-  final List<NewsJson> newsList;
+  final List<NewsJson>? newsList;
+  final Function retryButtonFunction;
 
   @override
   Widget build(BuildContext context) {
+    if (newsList == null) {
+      return ErrorState(
+          stateRendererType: StateRendererType.fullScreenErorr,
+          retryActionFunction: () {
+            retryButtonFunction();
+          }).getScreenWidget(context);
+    }
+
+    if (newsList!.isEmpty) {
+      return LoadingState(
+              stateRendererType: StateRendererType.fullScreenLoadingState)
+          .getScreenWidget(context);
+    }
+
     return Container(
       decoration: BoxDecoration(
         boxShadow: [
@@ -36,7 +52,7 @@ class ImageSlider extends StatelessWidget {
           autoPlay: true,
           viewportFraction: 1,
         ),
-        items: newsList.map((i) {
+        items: newsList!.map((i) {
           return Builder(
             builder: (BuildContext context) {
               return NewsWidget(

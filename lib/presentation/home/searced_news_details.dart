@@ -1,10 +1,9 @@
+import 'dart:ui' as UI;
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_html/flutter_html.dart';
-import 'package:flutter_widget_from_html_core/flutter_widget_from_html_core.dart';
 import 'package:provider/provider.dart';
 import 'package:south24/app/provider_controller.dart';
-import 'package:south24/domain/modela/news_model.dart';
 import 'package:south24/presentation/common/state_renderer.dart';
 import 'package:south24/presentation/common/state_renderer_impl.dart';
 import 'package:south24/presentation/news_details/social_media_widget.dart';
@@ -28,10 +27,12 @@ class SearchedNewsDetails extends StatefulWidget {
 }
 
 class _SearchedNewsDetailsState extends State<SearchedNewsDetails> {
+  late final Controller provider;
   @override
   void initState() {
-    Provider.of<Controller>(context, listen: false).getNewsById(widget.Newsid);
     super.initState();
+    provider = context.read<Controller>();
+    provider.getNewsById(widget.Newsid);
   }
 
   @override
@@ -46,7 +47,7 @@ class _SearchedNewsDetailsState extends State<SearchedNewsDetails> {
                 image: const AssetImage(ImageAssets.splashLogo),
                 height: AppBar().preferredSize.height - AppSize.s18,
               )),
-          body: ErrorState(StateRendererType.fullScreenErrorState,
+          body: NoConnectionState(StateRendererType.fullScreenNoConnectionState,
                   AppStrings.noInternetConnection.tr())
               .getScreenWidget(context),
         );
@@ -66,6 +67,24 @@ class _SearchedNewsDetailsState extends State<SearchedNewsDetails> {
         );
       }
 
+      if (provider.searchedNews!.newsId == "0") {
+        return Scaffold(
+          appBar: AppBar(
+              primary: true,
+              title: Image(
+                image: const AssetImage(ImageAssets.splashLogo),
+                height: AppBar().preferredSize.height - AppSize.s18,
+              )),
+          body: ErrorState(
+              stateRendererType: StateRendererType.fullScreenErorr,
+              retryActionFunction: () {
+                provider.searchedNews = null;
+                provider.notifyListeners();
+                provider.getNewsById(widget.Newsid);
+              }).getScreenWidget(context),
+        );
+      }
+
       return Scaffold(
         appBar: AppBar(
             primary: true,
@@ -74,104 +93,117 @@ class _SearchedNewsDetailsState extends State<SearchedNewsDetails> {
               height: AppBar().preferredSize.height - AppSize.s18,
             )),
         body: SafeArea(
-          child: SingleChildScrollView(
-            child: Column(
-              children: [
-                CachedNetworkImage(
-                  height: size.height > size.width
-                      ? size.height * AppSize.s_3
-                      : size.width * AppSize.s_5,
-                  width: double.infinity,
-                  fit: BoxFit.cover,
-                  imageUrl: provider.searchedNews!.newsPic!.trim(),
-                  placeholder: (context, url) =>
-                      SvgPicture.asset(ImageAssets.imagePhaceholder),
-                  errorWidget: (context, url, error) =>
-                      const Center(child: Icon(Icons.error)),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(AppPadding.p12),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        provider.searchedNews!.newsSubject!.trim(),
-                        style: Theme.of(context).textTheme.bodyMedium,
-                      ),
-                      Row(
-                        children: [
-                          Icon(
-                            Icons.watch_later_outlined,
-                            color: ColorManager.lightPrimary,
-                            size: AppSize.s14,
-                          ),
-                          SizedBox(
-                            width: AppSize.s4,
-                          ),
-                          Text(
-                            formatDate(provider.searchedNews!.newsDatetime!),
-                            style:
-                                getMediumStyle(color: ColorManager.lightBlack),
-                          ),
-                        ],
-                      ),
-                      SocialMediaIcons(
-                        newsId: provider.searchedNews!.newsId,
-                        text: provider
-                            .checkTranslatedNews(provider.searchedNews!),
-                        transletedNewsId: provider.searchedNewsId(),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(
-                          top: AppPadding.p8,
+          child: Directionality(
+            textDirection:
+                provider.EnTopicId.contains(provider.searchedNews!.newsTopicid)
+                    ? UI.TextDirection.ltr
+                    : UI.TextDirection.rtl,
+            child: SingleChildScrollView(
+              child: Column(
+                children: [
+                  CachedNetworkImage(
+                    height: size.height > size.width
+                        ? size.height * AppSize.s_3
+                        : size.width * AppSize.s_5,
+                    width: double.infinity,
+                    fit: BoxFit.cover,
+                    imageUrl: provider.searchedNews!.newsPic!.trim(),
+                    placeholder: (context, url) =>
+                        SvgPicture.asset(ImageAssets.imagePhaceholder),
+                    errorWidget: (context, url, error) =>
+                        const Center(child: Icon(Icons.error)),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(AppPadding.p12),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          provider.searchedNews!.newsSubject!.trim(),
+                          style: Theme.of(context).textTheme.bodyMedium,
                         ),
-                        child: Html(
-                          data: provider.searchedNews!.newsBudy!.trim(),
+                        Row(
+                          children: [
+                            Icon(
+                              Icons.watch_later_outlined,
+                              color: ColorManager.lightPrimary,
+                              size: AppSize.s14,
+                            ),
+                            SizedBox(
+                              width: AppSize.s4,
+                            ),
+                            Text(
+                              provider.EnTopicId.contains(
+                                      provider.searchedNews!.newsTopicid)
+                                  ? provider.formatDate(
+                                      provider.searchedNews!.newsDatetime!,
+                                      AppStrings.englishLanguage)
+                                  : provider.formatDate(
+                                      provider.searchedNews!.newsDatetime!,
+                                      AppStrings.arabicLanguage),
+                              style: getMediumStyle(
+                                  color: ColorManager.lightBlack),
+                            ),
+                          ],
+                        ),
+                        SocialMediaIcons(
+                          newsId: provider.searchedNews!.newsId,
+                          text: provider
+                              .checkTranslatedNews(provider.searchedNews!),
+                          transletedNewsId: provider.searchedNewsId(),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(
+                            top: AppPadding.p8,
+                          ),
+                          child: Html(
+                            data: provider.searchedNews!.newsBudy!.trim(),
+                            onLinkTap: (url, context, attributes, element) =>
+                                launchUrl(Uri.parse(url!),
+                                    mode: LaunchMode.externalApplication),
+                            style: {
+                              'html': Style(
+                                  color: ColorManager.black,
+                                  fontSize: FontSize(FontSizeManager.s14),
+                                  fontFamily: FontConstants.fontFamily,
+                                  textAlign: TextAlign.justify),
+                            },
+                          ),
+                        ),
+                        Html(
+                          data: provider.searchedNews!.newsAuth!.trim(),
                           onLinkTap: (url, context, attributes, element) =>
                               launchUrl(Uri.parse(url!),
                                   mode: LaunchMode.externalApplication),
                           style: {
                             'html': Style(
                                 color: ColorManager.black,
-                                fontSize: FontSize(FontSizeManager.s14),
+                                fontSize: FontSize(FontSizeManager.s12),
                                 fontFamily: FontConstants.fontFamily,
                                 textAlign: TextAlign.justify),
                           },
                         ),
-                      ),
-                      Html(
-                        data: provider.searchedNews!.newsAuth!.trim(),
-                        onLinkTap: (url, context, attributes, element) =>
-                            launchUrl(Uri.parse(url!),
-                                mode: LaunchMode.externalApplication),
-                        style: {
-                          'html': Style(
-                              color: ColorManager.black,
-                              fontSize: FontSize(FontSizeManager.s12),
-                              fontFamily: FontConstants.fontFamily,
-                              textAlign: TextAlign.justify),
-                        },
-                      ),
-                      SizedBox(
-                        height: AppSize.s12,
-                      ),
-                      Html(
-                        data: provider.searchedNews!.newsRef!.trim(),
-                        onLinkTap: (url, context, attributes, element) =>
-                            launchUrl(Uri.parse(url!),
-                                mode: LaunchMode.externalApplication),
-                        style: {
-                          'html': Style(
-                              color: ColorManager.black,
-                              fontSize: FontSize(FontSizeManager.s12),
-                              fontFamily: FontConstants.fontFamily,
-                              textAlign: TextAlign.justify),
-                        },
-                      ),
-                    ],
+                        SizedBox(
+                          height: AppSize.s12,
+                        ),
+                        Html(
+                          data: provider.searchedNews!.newsRef!.trim(),
+                          onLinkTap: (url, context, attributes, element) =>
+                              launchUrl(Uri.parse(url!),
+                                  mode: LaunchMode.externalApplication),
+                          style: {
+                            'html': Style(
+                                color: ColorManager.black,
+                                fontSize: FontSize(FontSizeManager.s12),
+                                fontFamily: FontConstants.fontFamily,
+                                textAlign: TextAlign.justify),
+                          },
+                        ),
+                      ],
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         ),

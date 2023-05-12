@@ -16,12 +16,19 @@ class SpecialReportsView extends StatefulWidget {
 }
 
 class _SpecialReportsViewState extends State<SpecialReportsView> {
+  late final Controller provider;
+
   @override
   void initState() {
     super.initState();
-    final provider = Provider.of<Controller>(context, listen: false);
-    if (provider.specialReports.isEmpty) {
+    provider = context.read<Controller>();
+
+    if (provider.specialReports == null) {
       provider.getSpecialReportsNews();
+    } else {
+      if (provider.analytics!.isEmpty) {
+        provider.getSpecialReportsNews();
+      }
     }
   }
 
@@ -30,26 +37,38 @@ class _SpecialReportsViewState extends State<SpecialReportsView> {
     final Size size = MediaQuery.of(context).size;
     return Consumer<Controller>(
       builder: (context, provider, child) {
-        if (provider.specialReports.isEmpty) {
-          return LoadingState(
-            stateRendererType: StateRendererType.fullScreenLoadingState,
-          ).getScreenWidget(context);
-        }
 
         if (!provider.isConnected) {
-          return ErrorState(
-            StateRendererType.fullScreenErrorState,
-            AppStrings.noInternetConnection.tr(),
-          ).getScreenWidget(context);
+          return NoConnectionState(
+                  StateRendererType.fullScreenNoConnectionState,
+                  AppStrings.noInternetConnection.tr())
+              .getScreenWidget(context);
         }
 
+        if ( provider.specialReports == null) {
+          return ErrorState(
+              stateRendererType: StateRendererType.fullScreenErorr,
+              retryActionFunction: () {
+                provider.specialReports = [];
+                provider.notifyListeners();
+                provider.getSpecialReportsNews();
+              }).getScreenWidget(context);
+        }
+
+        if ( provider.specialReports!.isEmpty) {
+          return LoadingState(
+                  stateRendererType: StateRendererType.fullScreenLoadingState)
+              .getScreenWidget(context);
+        }
+
+
         return ListView.builder(
-          itemCount: provider.specialReports.length,
+          itemCount: provider.specialReports!.length,
           padding: const EdgeInsets.symmetric(vertical: AppPadding.p8),
           itemBuilder: (context, index) {
             return NewsWidgetHorizontal(
               size: size,
-              news: provider.specialReports[index],
+              news: provider.specialReports![index],
             );
           },
         );

@@ -65,6 +65,8 @@
     "seeAll":"شاهد الكل",
 
     "search":"بحث ...",
-    "searchWord":"بحث"
+    "searchWord":"بحث",
  
+    "retry" :  "إعادة المحاولة",
+    "somtingWrong" : "فشل في استرجاع البيانات"
 }

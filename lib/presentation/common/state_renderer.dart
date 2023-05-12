@@ -9,12 +9,10 @@ import 'package:south24/presentation/resources/styles_manager.dart';
 import 'package:south24/presentation/resources/values_manager.dart';
 
 enum StateRendererType {
-  popupLoadingState,
-  popupErrorState,
-  popupSuccess,
   fullScreenLoadingState,
-  fullScreenErrorState,
+  fullScreenNoConnectionState,
   fullScreenNoDataState,
+  fullScreenErorr
 }
 
 class StateRenderer extends StatelessWidget {
@@ -36,33 +34,27 @@ class StateRenderer extends StatelessWidget {
 
   Widget _getStateWidget(BuildContext context) {
     switch (stateRendererType) {
+      
       case StateRendererType.fullScreenLoadingState:
         return _getItemsColumn(
             [_getAnimatedImage(JsonAssets.loading), _getMessage(message)]);
-      case StateRendererType.fullScreenErrorState:
+
+      case StateRendererType.fullScreenNoConnectionState:
         return _getItemsColumn([
           _getAnimatedImage(JsonAssets.noIternet),
           _getMessage(message),
         ]);
-         case StateRendererType.fullScreenNoDataState:
+
+      case StateRendererType.fullScreenNoDataState:
         return _getItemsColumn(
             [_getAnimatedImage(JsonAssets.noData), _getMessage(message)]);
-      case StateRendererType.popupSuccess:
-        return _getPopUpDialog(context, [
-          _getAnimatedImage(JsonAssets.success),
-          _getMessage(title),
-          _getMessage(message),
-          _getRetryButton(AppStrings.ok.tr(), context)
-        ]);
-      case StateRendererType.popupErrorState:
-        return _getPopUpDialog(context, [
+
+      case StateRendererType.fullScreenErorr:
+        return _getItemsColumn([
           _getAnimatedImage(JsonAssets.erorr),
           _getMessage(message),
-          _getRetryButton(AppStrings.ok.tr(), context)
+          _getRetryButton(context)
         ]);
-      case StateRendererType.popupLoadingState:
-        return _getPopUpDialog(
-            context, [_getAnimatedImage(JsonAssets.loading)]);
       default:
         return Container();
     }
@@ -97,33 +89,7 @@ class StateRenderer extends StatelessWidget {
     );
   }
 
-  Widget _getPopUpDialog(BuildContext context, List<Widget> children) {
-    return Dialog(
-      shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(AppSize.s14)),
-      elevation: AppSize.s1_5,
-      backgroundColor: Colors.transparent,
-      child: Container(
-        decoration: BoxDecoration(
-            color: ColorManager.white,
-            shape: BoxShape.rectangle,
-            borderRadius: BorderRadius.circular(AppSize.s14),
-            boxShadow: const [BoxShadow(color: Colors.black26)]),
-        child: _getDialogContent(context, children),
-      ),
-    );
-  }
-
-  Widget _getDialogContent(BuildContext context, List<Widget> children) {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      mainAxisAlignment: MainAxisAlignment.center,
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: children,
-    );
-  }
-
-  Widget _getRetryButton(String buttonTitle, BuildContext context) {
+  Widget _getRetryButton(BuildContext context) {
     return Center(
       child: Padding(
         padding: const EdgeInsets.all(AppPadding.p18),
@@ -131,19 +97,10 @@ class StateRenderer extends StatelessWidget {
             width: double.infinity,
             child: ElevatedButton(
                 onPressed: () {
-                  if (stateRendererType ==
-                      StateRendererType.fullScreenErrorState) {
-                    // call retry function
-                    retryActionFunction!.call();
-                  } else {
-                    // popup error state
-                    Navigator.of(context).pop();
-                  }
+                  retryActionFunction!.call();
                 },
-                child: Text(buttonTitle))),
+                child: Text(AppStrings.retry.tr()))),
       ),
     );
   }
-
-
 }

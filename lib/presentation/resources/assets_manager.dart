@@ -17,7 +17,7 @@ class JsonAssets {
   static const String twitter = '$jsonPath/twitter_logo.json';
   static const String loading = '$jsonPath/loading.json';
   static const String noIternet = '$jsonPath/no_internet_connection.json';
-  static const String erorr = '$jsonPath/erorr.json';
+  static const String erorr = '$jsonPath/error.json';
   static const String success = '$jsonPath/success.json';
   static const String noData = '$jsonPath/no_data.json';
 }

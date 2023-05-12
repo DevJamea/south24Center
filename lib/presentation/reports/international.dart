@@ -16,37 +16,59 @@ class InternationalView extends StatefulWidget {
 }
 
 class _InternationalViewState extends State<InternationalView> {
+  late final Controller provider;
+
   @override
   void initState() {
     super.initState();
-        final provider = Provider.of<Controller>(context, listen: false);
- provider.international.isEmpty ? provider.getInternationalNews() : null;
+
+    provider = context.read<Controller>();
+
+    if (provider.international == null) {
+      provider.getInternationalNews();
+    } else {
+      if (provider.international!.isEmpty) {
+        provider.getInternationalNews();
+      }
+    }
   }
+
   @override
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
     return Consumer<Controller>(builder: (context, provider, child) {
+      
+       if (!provider.isConnected) {
+          return NoConnectionState(
+                  StateRendererType.fullScreenNoConnectionState,
+                  AppStrings.noInternetConnection.tr())
+              .getScreenWidget(context);
+        }
 
-      if (!provider.isConnected) {
-        return ErrorState(StateRendererType.fullScreenErrorState,
-                AppStrings.noInternetConnection.tr())
-            .getScreenWidget(context);
-      }
+        if (provider.international == null) {
+          return ErrorState(
+              stateRendererType: StateRendererType.fullScreenErorr,
+              retryActionFunction: () {
+                provider.international = [];
+                provider.notifyListeners();
+                provider.getInternationalNews();
+              }).getScreenWidget(context);
+        }
 
-      if (provider.international.isEmpty) {
-        return LoadingState(
-                stateRendererType: StateRendererType.fullScreenLoadingState)
-            .getScreenWidget(context);
-      }
+        if (provider.international!.isEmpty) {
+          return LoadingState(
+                  stateRendererType: StateRendererType.fullScreenLoadingState)
+              .getScreenWidget(context);
+        }
 
       return Scaffold(
         body: ListView.builder(
-          itemCount: provider.international.length,
+          itemCount: provider.international!.length,
           padding: const EdgeInsets.symmetric(vertical: AppPadding.p8),
           itemBuilder: (context, index) {
             return NewsWidgetHorizontal(
               size: size,
-              news: provider.international[index],
+              news: provider.international![index],
             );
           },
         ),

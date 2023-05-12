@@ -18,29 +18,53 @@ class InfographicsView extends StatefulWidget {
 }
 
 class _InfographicsViewState extends State<InfographicsView> {
+  late final Controller provider;
+
+  @override
+  void initState() {
+    super.initState();
+
+    provider = context.read<Controller>();
+
+    if (provider.infographic == null) {
+      provider.isArabic()
+          ? provider.getInfographicArNews()
+          : provider.getInfographicEnNews();
+    } else {
+      if (provider.infographic!.isEmpty) {
+        provider.isArabic()
+            ? provider.getInfographicArNews()
+            : provider.getInfographicEnNews();
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final Size screenSize = MediaQuery.of(context).size;
     final bool isPortrait = screenSize.height > screenSize.width;
     final TextStyle textStyle = getMediumStyle(color: ColorManager.black);
     return Consumer<Controller>(builder: (context, provider, child) {
-
-      if (provider.isArabic()) {
-       if(provider.infographic.isEmpty){
-          provider.getInfographicArNews();
-       }
-      } else {
-       if(provider.infographic.isEmpty){
-          provider.getInfographicEnNews();
-       }
-      }
-
+      
       if (!provider.isConnected) {
-        return ErrorState(StateRendererType.fullScreenErrorState,
+        return NoConnectionState(StateRendererType.fullScreenNoConnectionState,
                 AppStrings.noInternetConnection.tr())
             .getScreenWidget(context);
       }
-      if (provider.infographic.isEmpty) {
+
+      if (provider.infographic == null) {
+        return ErrorState(
+            stateRendererType: StateRendererType.fullScreenErorr,
+            retryActionFunction: () {
+              provider.infographic = [];
+              provider.notifyListeners();
+              provider.isArabic()
+                  ? provider.getInfographicArNews()
+                  : provider.getInfographicEnNews();
+            }).getScreenWidget(context);
+      }
+
+      if (provider.infographic!.isEmpty) {
         return LoadingState(
                 stateRendererType: StateRendererType.fullScreenLoadingState)
             .getScreenWidget(context);
@@ -56,11 +80,11 @@ class _InfographicsViewState extends State<InfographicsView> {
               mainAxisExtent:
                   screenSize.height / 2 + AppSize.s8 + textStyle.fontSize!,
             ),
-            itemCount: provider.infographic.length,
+            itemCount: provider.infographic!.length,
             padding: const EdgeInsets.symmetric(vertical: AppPadding.p8),
             itemBuilder: (context, index) {
               return InfographicsWidget(
-                infographics: provider.infographic[index],
+                infographics: provider.infographic![index],
               );
             },
           ),

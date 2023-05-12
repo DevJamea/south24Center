@@ -109,6 +109,7 @@ flutter:
     - assets/json/loading.json
     - assets/json/no_internet_connection.json
     - assets/json/no_data.json
+    - assets/json/error.json
     - assets/translations/ar-SA.json
     - assets/translations/en-US.json
     - assets/images/facebook_icon.svg

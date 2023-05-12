@@ -1,14 +1,15 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:south24/app/constants.dart';
 import 'package:south24/presentation/common/state_renderer.dart';
 import 'package:south24/presentation/resources/strings_mangaer.dart';
 
 abstract class FlowState {
   StateRendererType getStateRendererType();
-
   String getMessage();
+  Function? getRetryActionFunction();
 }
+
+
 
 class LoadingState extends FlowState {
   StateRendererType stateRendererType;
@@ -22,20 +23,34 @@ class LoadingState extends FlowState {
 
   @override
   StateRendererType getStateRendererType() => stateRendererType;
+  
+  @override
+  Function? getRetryActionFunction() {
+    return null;
+  }
 }
 
-class ErrorState extends FlowState {
+
+
+class NoConnectionState extends FlowState {
   StateRendererType stateRendererType;
   String message;
 
-  ErrorState(this.stateRendererType, this.message);
+  NoConnectionState(this.stateRendererType, this.message);
 
   @override
   String getMessage() => message;
 
   @override
   StateRendererType getStateRendererType() => stateRendererType;
+
+  @override
+  Function? getRetryActionFunction() {
+    return null;
+  }
 }
+
+
 
 class NoDataState extends FlowState {
   StateRendererType stateRendererType;
@@ -49,18 +64,34 @@ class NoDataState extends FlowState {
 
   @override
   StateRendererType getStateRendererType() => stateRendererType;
+
+  @override
+  Function? getRetryActionFunction() {
+    return null;
+  }
 }
 
-class SuccessState extends FlowState {
-  String message;
+class ErrorState extends FlowState {
+  StateRendererType stateRendererType;
+  String? message;
+  Function retryActionFunction;
 
-  SuccessState(this.message);
+  ErrorState(
+      {required this.stateRendererType, 
+      required this.retryActionFunction,
+      String message = AppStrings.loading});
 
   @override
-  String getMessage() => message;
+  String getMessage() => message ?? AppStrings.somtingWrong.tr();
 
   @override
-  StateRendererType getStateRendererType() => StateRendererType.popupSuccess;
+  StateRendererType getStateRendererType() => stateRendererType;
+
+  @override
+  Function? getRetryActionFunction() {
+    return retryActionFunction;
+  }
+
 }
 
 extension FlowStateExtension on FlowState {
@@ -80,11 +111,20 @@ extension FlowStateExtension on FlowState {
             stateRendererType: getStateRendererType(),
           );
         }
-      case ErrorState:
+      case NoConnectionState:
         {
           return StateRenderer(
             message: getMessage(),
             stateRendererType: getStateRendererType(),
+          );
+        }
+
+          case ErrorState:
+        {
+          return StateRenderer(
+            message: getMessage(),
+            stateRendererType: getStateRendererType(),
+            retryActionFunction: getRetryActionFunction(),
           );
         }
 
@@ -95,24 +135,5 @@ extension FlowStateExtension on FlowState {
     }
   }
 
-  _isCurrentDialogShowing(BuildContext context) =>
-      ModalRoute.of(context)?.isCurrent != true;
 
-  dismissDialog(BuildContext context) {
-    if (_isCurrentDialogShowing(context)) {
-      Navigator.of(context, rootNavigator: true).pop(true);
-    }
-  }
-
-  showPopup(
-      BuildContext context, StateRendererType stateRendererType, String message,
-      {String title = Constants.empty}) {
-    WidgetsBinding.instance.addPostFrameCallback((_) => showDialog(
-        context: context,
-        builder: (BuildContext context) => StateRenderer(
-            stateRendererType: stateRendererType,
-            message: message,
-            title: title,
-            retryActionFunction: () {})));
-  }
 }

@@ -16,47 +16,59 @@ class ArabicView extends StatefulWidget {
 }
 
 class _ArabicViewState extends State<ArabicView> {
+  late final Controller provider;
+
   @override
   void initState() {
     super.initState();
-    final provider = Provider.of<Controller>(context, listen: false);
-    provider.arabic.isEmpty ? provider.getArarbicNews() : null;
+
+    provider = context.read<Controller>();
+
+    if (provider.arabic == null) {
+      provider.getArarbicNews();
+    } else {
+      if (provider.arabic!.isEmpty) {
+        provider.getArarbicNews();
+      }
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
     return Consumer<Controller>(builder: (context, provider, child) {
-      if (!provider.isConnected) {
-        return ErrorState(StateRendererType.fullScreenErrorState,
-                AppStrings.noInternetConnection.tr())
-            .getScreenWidget(context);
-      }
-
-      if (provider.arabic.isEmpty && !provider.exceotionOccured) {
-        return LoadingState(
-                stateRendererType: StateRendererType.fullScreenLoadingState)
-            .getScreenWidget(context);
-      }
       
-      if (provider.exceotionOccured) {
-        return Center(
-          child: ElevatedButton(
-              onPressed: () {
+      if (!provider.isConnected) {
+          return NoConnectionState(
+                  StateRendererType.fullScreenNoConnectionState,
+                  AppStrings.noInternetConnection.tr())
+              .getScreenWidget(context);
+        }
+
+        if (provider.arabic == null) {
+          return ErrorState(
+              stateRendererType: StateRendererType.fullScreenErorr,
+              retryActionFunction: () {
+                provider.arabic = [];
+                provider.notifyListeners();
                 provider.getArarbicNews();
-              },
-              child: Text("reload")),
-        );
-      }
+              }).getScreenWidget(context);
+        }
+
+        if (provider.arabic!.isEmpty) {
+          return LoadingState(
+                  stateRendererType: StateRendererType.fullScreenLoadingState)
+              .getScreenWidget(context);
+        };
 
       return Scaffold(
         body: ListView.builder(
-          itemCount: provider.arabic.length,
+          itemCount: provider.arabic!.length,
           padding: const EdgeInsets.symmetric(vertical: AppPadding.p8),
           itemBuilder: (context, index) {
             return NewsWidgetHorizontal(
               size: size,
-              news: provider.arabic[index],
+              news: provider.arabic![index],
             );
           },
         ),

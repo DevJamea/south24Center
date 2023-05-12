@@ -1,9 +1,6 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:html/parser.dart' as parser;
-
-import 'dart:io';
-import 'package:path_provider/path_provider.dart';
 import 'package:south24/domain/modela/arabic_versions.dart';
 import 'package:south24/domain/modela/infographics.dart';
 import 'package:south24/domain/modela/news_model.dart';
@@ -12,34 +9,106 @@ import 'package:south24/domain/modela/twitter_model.dart';
 import 'package:south24/domain/modela/youtube_model.dart';
 
 class DataSource {
+  static final TranslatedNews errorTranlatedNews = TranslatedNews(
+      newsId: "0",
+      newsSubject: "",
+      newsEsubject: "",
+      newsBudy: "",
+      newsEbudy: "",
+      newsTopicid: "",
+      newsPic: "",
+      newsPictitle: "",
+      newsAuth: "",
+      newsRef: "",
+      newsTags: "",
+      newsDatetime: "",
+      link_ar: "",
+      link_en: "");
   DataSource._();
   static DataSource instance = DataSource._();
 
-  Future<TranslatedNews> fetchNewsById(String url) async {
-    final response = await http.get(Uri.parse(url));
-    if (response.statusCode == 200) {
-      final encodedBody = utf8.decode(response.bodyBytes);
-      final jsonData = json.decode(encodedBody) as List<dynamic>;
-      final newsList = jsonData.map((data) => TranslatedNews.fromJson(data)).toList();
-      if (newsList.isNotEmpty) {
-        return newsList.first;
-      } else {
-        throw Exception('No data found');
-      }
-    } else {
-      throw Exception('Failed to load data');
-    }
-  }
-
-  Future<List<NewsJson>> fetchNewsData(String url) async {
+  Future<List<NewsJson>?> fetchNewsData(String url) async {
     final response = await http.get(Uri.parse(url));
     if (response.statusCode == 200) {
       final encodedBody = utf8.decode(response.bodyBytes);
       final jsonData = json.decode(encodedBody) as List<dynamic>;
       final newsList = jsonData.map((data) => NewsJson.fromJson(data)).toList();
-      return newsList;
+      if (newsList.isEmpty) {
+        return null;
+      } else {
+        return newsList;
+      }
     } else {
-      throw Exception('Failed to load data');
+      return null;
+    }
+  }
+
+  Future<List<YoutubeModel>?> fetchYoutubeData(String url) async {
+    final response = await http.get(Uri.parse(url));
+    if (response.statusCode == 200) {
+      final encodedBody = utf8.decode(response.bodyBytes);
+      final jsonData = json.decode(encodedBody) as List<dynamic>;
+      final youtubeModelList =
+          jsonData.map((data) => YoutubeModel.fromJson(data)).toList();
+      if (youtubeModelList.isEmpty) {
+        return null;
+      } else {
+        return youtubeModelList;
+      }
+    } else {
+      return null;
+    }
+  }
+
+  Future<List<ArabicVersions>?> fetchArabicVersionsData(String url) async {
+    final response = await http.get(Uri.parse(url));
+    if (response.statusCode == 200) {
+      final encodedBody = utf8.decode(response.bodyBytes);
+      final jsonData = json.decode(encodedBody) as List<dynamic>;
+      final versionsList =
+          jsonData.map((data) => ArabicVersions.fromJson(data)).toList();
+      if (versionsList.isEmpty) {
+        return null;
+      } else {
+        return versionsList;
+      }
+    } else {
+      return null;
+    }
+  }
+
+  Future<List<Infographics>?> fetchInfographicsData(String url) async {
+    final response = await http.get(Uri.parse(url));
+
+    if (response.statusCode == 200) {
+      final encodedBody = utf8.decode(response.bodyBytes);
+      final jsonData = json.decode(encodedBody) as List<dynamic>;
+      final infographicsList =
+          jsonData.map((data) => Infographics.fromJson(data)).toList();
+      if (infographicsList.isEmpty) {
+        return null;
+      } else {
+        return infographicsList;
+      }
+    } else {
+      return null;
+    }
+  }
+
+  Future<TranslatedNews?> fetchNewsById(String url) async {
+    final response = await http.get(Uri.parse(url));
+    if (response.statusCode == 200) {
+      final encodedBody = utf8.decode(response.bodyBytes);
+      final jsonData = json.decode(encodedBody) as List<dynamic>;
+      final newsList =
+          jsonData.map((data) => TranslatedNews.fromJson(data)).toList();
+      if (newsList.isNotEmpty) {
+        return newsList.first;
+      } else {
+        return errorTranlatedNews;
+      }
+    } else {
+      return errorTranlatedNews;
     }
   }
 
@@ -58,47 +127,6 @@ class DataSource {
     }
   }
 
-  Future<List<ArabicVersions>> fetchArabicVersionsData(String url) async {
-    final response = await http.get(Uri.parse(url));
-
-    if (response.statusCode == 200) {
-      final encodedBody = utf8.decode(response.bodyBytes);
-      final jsonData = json.decode(encodedBody) as List<dynamic>;
-      final versionsList =
-          jsonData.map((data) => ArabicVersions.fromJson(data)).toList();
-      return versionsList;
-    } else {
-      throw Exception('Failed to load data');
-    }
-  }
-
-  Future<List<Infographics>> fetchInfographicsData(String url) async {
-    final response = await http.get(Uri.parse(url));
-
-    if (response.statusCode == 200) {
-      final encodedBody = utf8.decode(response.bodyBytes);
-      final jsonData = json.decode(encodedBody) as List<dynamic>;
-      final infographicsList =
-          jsonData.map((data) => Infographics.fromJson(data)).toList();
-      return infographicsList;
-    } else {
-      throw Exception('Failed to load data');
-    }
-  }
-
-  Future<List<YoutubeModel>> fetchYoutubeData(String url) async {
-    final response = await http.get(Uri.parse(url));
-    if (response.statusCode == 200) {
-      final encodedBody = utf8.decode(response.bodyBytes);
-      final jsonData = json.decode(encodedBody) as List<dynamic>;
-      final youtubeModelList =
-          jsonData.map((data) => YoutubeModel.fromJson(data)).toList();
-      return youtubeModelList;
-    } else {
-      throw Exception('Failed to load data');
-    }
-  }
-
   Future<List<TwitterModel>> fetchTwitterData(String url) async {
     final response = await http.get(Uri.parse(url));
 
@@ -110,22 +138,6 @@ class DataSource {
       return twitterModelList;
     } else {
       throw Exception('Failed to load data');
-    }
-  }
-
-  Future<File> loadPDF(url) async {
-    Uri uri = Uri.parse(url);
-    String fileName = uri.pathSegments.last;
-    var response = await http.get(Uri.parse(url));
-    if (Platform.isAndroid) {
-      File file = new File('/storage/emulated/0/Download/$fileName');
-      await file.writeAsBytes(response.bodyBytes, flush: true);
-      return file;
-    } else {
-      final downloadsDirectory = await getApplicationDocumentsDirectory();
-      File file = new File('${downloadsDirectory.path}/$fileName');
-      await file.writeAsBytes(response.bodyBytes, flush: true);
-      return file;
     }
   }
 }

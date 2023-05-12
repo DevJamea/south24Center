@@ -19,92 +19,101 @@ class South24TV extends StatefulWidget {
 
 class _South24TVState extends State<South24TV> {
   late Key _playerKey;
+  late final Controller provider;
 
   @override
   void initState() {
     super.initState();
-    _playerKey = UniqueKey();
-    final provider = Provider.of<Controller>(context, listen: false);
-    if (provider.youtube.isEmpty) {
-      provider.getYoutubeData();
-    }
-  }
 
-  @override
-  void dispose() {
-    final provider = context.read<Controller>();
-    provider.youtubePlayerController!.dispose();
-    super.dispose();
+    _playerKey = UniqueKey();
+    provider = context.read<Controller>();
+
+    if (provider.youtube == null) {
+      provider.getYoutubeData();
+    } else {
+      if (provider.youtube!.isEmpty) {
+        provider.getYoutubeData();
+      }
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
-    final provider = context.watch<Controller>();
+    return Consumer<Controller>(builder: (context, Provider, child) {
+      final youtubePlayerController = provider.youtubePlayerController;
 
-    
+      if (!provider.isConnected) {
+        return NoConnectionState(StateRendererType.fullScreenNoConnectionState,
+                AppStrings.noInternetConnection.tr())
+            .getScreenWidget(context);
+      }
 
-    if (!provider.isConnected) {
-      return ErrorState(
-        StateRendererType.fullScreenErrorState,
-        AppStrings.noInternetConnection.tr(),
-      ).getScreenWidget(context);
-    }
+      if (provider.youtube == null) {
+        return ErrorState(
+            stateRendererType: StateRendererType.fullScreenErorr,
+            retryActionFunction: () {
+              provider.youtube = [];
+              provider.notifyListeners();
+              provider.getYoutubeData();
+            }).getScreenWidget(context);
+      }
 
-    final youtubePlayerController = provider.youtubePlayerController;
+      if (provider.youtubePlayerController == null ||
+          provider.youtube!.isEmpty) {
+        return LoadingState(
+                stateRendererType: StateRendererType.fullScreenLoadingState)
+            .getScreenWidget(context);
+      }
 
-    if (youtubePlayerController == null) {
-      return LoadingState(
-        stateRendererType: StateRendererType.fullScreenLoadingState,
-      ).getScreenWidget(context);
-    }
-
-    return Scaffold(
-      body: Column(
-        children: [
-          YoutubePlayerBuilder(
-            player: YoutubePlayer(
-              key: _playerKey,
-              controller: youtubePlayerController,
+      return Scaffold(
+        body: Column(
+          children: [
+            YoutubePlayerBuilder(
+              player: YoutubePlayer(
+                key: _playerKey,
+                controller: youtubePlayerController!,
+              ),
+              builder: (_, player) => player,
             ),
-            builder: (_, player) => player,
-          ),
-          Expanded(
-            child: ListView.builder(
-              itemCount: provider.youtube.length,
-              padding: const EdgeInsets.symmetric(vertical: AppPadding.p8),
-              itemBuilder: (context, index) {
-                final youtubeModel = provider.youtube[index];
-                return InkWell(
-                  onTap: () {
-                    final selectedYoutubeId = youtubeModel.ytVideoId!;
-                    if (provider.selectedYoutube != selectedYoutubeId) {
-                      provider.getYoutubeVideoPlayer(selectedYoutubeId);
-                      setState(() {
-                        _playerKey = UniqueKey();
-                      });
-                    }
-                  },
-                  child: Container(
-                    decoration: BoxDecoration(
-                      color: provider.selectedYoutube == youtubeModel.ytVideoId
-                          ? ColorManager.lightGrey
-                          : null,
-                      borderRadius: BorderRadius.circular(AppSize.s4),
+            Expanded(
+              child: ListView.builder(
+                itemCount: provider.youtube!.length,
+                padding: const EdgeInsets.symmetric(vertical: AppPadding.p8),
+                itemBuilder: (context, index) {
+                  final youtubeModel = provider.youtube![index];
+                  return InkWell(
+                    onTap: () {
+                      final selectedYoutubeId = youtubeModel.ytVideoId!;
+                      if (provider.selectedYoutube != selectedYoutubeId) {
+                        provider.getYoutubeVideoPlayer(selectedYoutubeId);
+                        setState(() {
+                          _playerKey = UniqueKey();
+                        });
+                      }
+                    },
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color:
+                            provider.selectedYoutube == youtubeModel.ytVideoId
+                                ? ColorManager.lightGrey
+                                : null,
+                        borderRadius: BorderRadius.circular(AppSize.s4),
+                      ),
+                      margin: const EdgeInsets.symmetric(
+                        vertical: AppMargin.m4,
+                        horizontal: AppPadding.p12,
+                      ),
+                      child:
+                          YoutubeWidget(size: size, youtubeModel: youtubeModel),
                     ),
-                    margin: const EdgeInsets.symmetric(
-                      vertical: AppMargin.m4,
-                      horizontal: AppPadding.p12,
-                    ),
-                    child:
-                        YoutubeWidget(size: size, youtubeModel: youtubeModel),
-                  ),
-                );
-              },
+                  );
+                },
+              ),
             ),
-          ),
-        ],
-      ),
-    );
+          ],
+        ),
+      );
+    });
   }
 }

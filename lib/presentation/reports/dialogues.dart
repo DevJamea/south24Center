@@ -16,42 +16,62 @@ class DialoguesView extends StatefulWidget {
 }
 
 class _DialoguesViewState extends State<DialoguesView> {
+  late final Controller provider;
 
   @override
   void initState() {
     super.initState();
-    final provider = Provider.of<Controller>(context, listen: false);
-    provider.dialogues.isEmpty ? provider.getDialoguesNews() : null;
+
+    provider = context.read<Controller>();
+
+    if (provider.dialogues == null) {
+      provider.getDialoguesNews();
+    } else {
+      if (provider.dialogues!.isEmpty) {
+        provider.getDialoguesNews();
+      }
+    }
   }
+
   @override
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
     return Consumer<Controller>(builder: (context, provider, child) {
-      
-      if (!provider.isConnected) {
-        return ErrorState(StateRendererType.fullScreenErrorState,
-                AppStrings.noInternetConnection.tr())
-            .getScreenWidget(context);
-      }
+     
+     if (!provider.isConnected) {
+          return NoConnectionState(
+                  StateRendererType.fullScreenNoConnectionState,
+                  AppStrings.noInternetConnection.tr())
+              .getScreenWidget(context);
+        }
 
-      if (provider.dialogues.isEmpty) {
-        return LoadingState(
-                stateRendererType: StateRendererType.fullScreenLoadingState)
-            .getScreenWidget(context);
-      }
-      
+        if (provider.dialogues == null) {
+          return ErrorState(
+              stateRendererType: StateRendererType.fullScreenErorr,
+              retryActionFunction: () {
+                provider.dialogues = [];
+                provider.notifyListeners();
+                provider.getDialoguesNews();
+              }).getScreenWidget(context);
+        }
+
+        if (provider.dialogues!.isEmpty) {
+          return LoadingState(
+                  stateRendererType: StateRendererType.fullScreenLoadingState)
+              .getScreenWidget(context);
+        }
+
       return Scaffold(
         body: ListView.builder(
-                    itemCount: provider.dialogues.length,
-                    padding:
-                        const EdgeInsets.symmetric(vertical: AppPadding.p8),
-                    itemBuilder: (context, index) {
-                      return NewsWidgetHorizontal(
-                        size: size,
-                        news: provider.dialogues[index],
-                      );
-                    },
-                  ),
+          itemCount: provider.dialogues!.length,
+          padding: const EdgeInsets.symmetric(vertical: AppPadding.p8),
+          itemBuilder: (context, index) {
+            return NewsWidgetHorizontal(
+              size: size,
+              news: provider.dialogues![index],
+            );
+          },
+        ),
       );
     });
   }

@@ -65,7 +65,10 @@
     "seeAll":"See All",
 
     "search":"Search ...",
-    "searchWord":"search"
+    "searchWord":"search",
+ 
+    "retry" :  "Retry",
+    "somtingWrong" : "Failed to fetch data"
  
   }
   
