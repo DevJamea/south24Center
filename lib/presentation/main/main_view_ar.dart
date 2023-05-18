@@ -1,10 +1,8 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 import 'package:south24/app/provider_controller.dart';
-import 'package:south24/domain/modela/arabic_versions.dart';
 import 'package:south24/domain/modela/news_model.dart';
 import 'package:south24/presentation/common/state_renderer.dart';
 import 'package:south24/presentation/common/state_renderer_impl.dart';
@@ -15,8 +13,6 @@ import 'package:south24/presentation/main/latest_release_section.dart';
 import 'package:south24/presentation/main/list_view_section.dart';
 import 'package:south24/presentation/main/name_section.dart';
 import 'package:south24/presentation/main/news_widget.dart';
-import 'package:south24/presentation/resources/assets_manager.dart';
-import 'package:south24/presentation/resources/routs_manager.dart';
 import 'package:south24/presentation/resources/strings_mangaer.dart';
 import 'package:south24/presentation/resources/values_manager.dart';
 import 'package:south24/presentation/widgets/news_widget_horizantal.dart';
@@ -32,6 +28,7 @@ class MianViewAr extends StatefulWidget {
 
 class _MianStateAr extends State<MianViewAr> {
   late final Controller provider;
+  final FirebaseAnalytics analytics = FirebaseAnalytics.instance;
 
   _getInitData(List<dynamic>? list, Function getData) {
     if (list == null) {
@@ -49,6 +46,7 @@ class _MianStateAr extends State<MianViewAr> {
 
     provider = context.read<Controller>();
 
+    _getInitData(provider.searchList, provider.getSliderArNews);
     _getInitData(provider.analytics, provider.getAnalyticsArNews);
     _getInitData(provider.specialReports, provider.getSpecialReportsNews);
     _getInitData(provider.international, provider.getInternationalNews);
@@ -58,6 +56,8 @@ class _MianStateAr extends State<MianViewAr> {
 
   @override
   Widget build(BuildContext context) {
+        analytics.setCurrentScreen(screenName: 'MainAr');
+
     var size = MediaQuery.of(context).size;
     return Consumer<Controller>(builder: (context, provider, child) {
       if (!provider.isConnected) {
@@ -73,11 +73,11 @@ class _MianStateAr extends State<MianViewAr> {
             //image Silder section
             ImageSlider(
               size: size,
-              newsList: provider.analytics,
+              newsList: provider.slider,
               retryButtonFunction: () {
-                provider.analytics = [];
+                provider.slider = [];
                 provider.notifyListeners();
-                provider.getAnalyticsArNews();
+                provider.getSliderArNews();
               },
             ),
             const SizedBox(

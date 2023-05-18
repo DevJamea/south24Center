@@ -5,6 +5,7 @@ import 'package:south24/presentation/about/member_details.dart';
 import 'package:south24/presentation/home/home_view.dart';
 import 'package:south24/presentation/home/searced_news_details.dart';
 import 'package:south24/presentation/home/search_screen.dart';
+import 'package:south24/presentation/home/searched_member_details.dart';
 import 'package:south24/presentation/news_details/news_details_view.dart';
 import 'package:south24/presentation/publications/fullscreen_image.dart';
 import 'package:south24/presentation/publications/show_publications_details.dart';
@@ -20,6 +21,7 @@ class Routes {
   static const String MemberDetailsRoute = "/memberDetailsImage";
   static const String SearchScreenRoute = "/searchScreen";
   static const String SearchedNewsDetails = "/searchedNewsDetails";
+  static const String SearchedMemberDetails = "/searchedMemberDetails";
 }
 
 class RouteGenerator {
@@ -54,6 +56,11 @@ class RouteGenerator {
         var args = settings.arguments;
         return MaterialPageRoute(
           builder: (_) => SearchedNewsDetails(Newsid: args as String),
+        );
+        case Routes.SearchedMemberDetails:
+        var args = settings.arguments;
+        return MaterialPageRoute(
+          builder: (_) => SearchedMemberDetails(memberId: args as String),
         );
       case Routes.SearchScreenRoute:
         return MaterialPageRoute(builder: (_) => const SearchScreen());

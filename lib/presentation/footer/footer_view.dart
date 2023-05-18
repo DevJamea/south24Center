@@ -70,7 +70,7 @@ class FooterView extends StatelessWidget {
           const SizedBox(height: 5),
           _buildEmailRow(email2LaunchUri, AppStrings.email2),
           const SizedBox(height: 5),
-          _buildEmailRow(website, AppStrings.website),
+          _buildLinkRow(website, AppStrings.website),
           const SizedBox(height: 18),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -116,11 +116,10 @@ class FooterView extends StatelessWidget {
     );
   }
 
-  Widget _buildLinkRow(
-      IconData icon, String text, Uri uri, BuildContext context) {
+  Widget _buildLinkRow(Uri uri, String text) {
     return Row(
       children: [
-        Icon(icon, color: ColorManager.white),
+        Icon(Icons.link, color: ColorManager.white),
         SizedBox(width: AppSize.s12),
         InkWell(
           splashColor: ColorManager.lightGrey,

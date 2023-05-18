@@ -18,8 +18,6 @@ class NewsWidgetHorizontal extends StatelessWidget {
   final Size size;
   final NewsJson news;
 
-  
-
   @override
   Widget build(BuildContext context) {
     return InkWell(
@@ -48,6 +46,8 @@ class NewsWidgetHorizontal extends StatelessWidget {
                       : size.width * AppSize.s_20,
                   fit: BoxFit.cover,
                   imageUrl: news.newsPic!,
+                  maxWidthDiskCache: 400,
+                  maxHeightDiskCache: 280,
                   placeholder: (context, url) =>
                       SvgPicture.asset(ImageAssets.imagePhaceholder),
                   errorWidget: (context, url, error) =>
@@ -82,7 +82,10 @@ class NewsWidgetHorizontal extends StatelessWidget {
                       ),
                       Expanded(
                         child: Text(
-                          html.parse(news.newsBudy!.trim()).documentElement!.text,
+                          html
+                              .parse(news.newsBudy!.trim())
+                              .documentElement!
+                              .text,
                           style: TextStyle(
                             fontSize: FontSizeManager.s12,
                             color: ColorManager.grey,

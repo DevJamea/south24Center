@@ -44,6 +44,7 @@ class SectionNameWidget extends StatelessWidget {
           Container(
             margin: EdgeInsets.all(13),
             child: GridView.builder(
+              addAutomaticKeepAlives: false,
               shrinkWrap: true,
               physics: NeverScrollableScrollPhysics(),
               gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(

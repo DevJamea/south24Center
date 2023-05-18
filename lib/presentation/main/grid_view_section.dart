@@ -1,13 +1,9 @@
-import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:south24/domain/modela/news_model.dart';
 import 'package:south24/presentation/common/state_renderer.dart';
 import 'package:south24/presentation/common/state_renderer_impl.dart';
 import 'package:south24/presentation/main/news_widget.dart';
-import 'package:south24/presentation/resources/color_manager.dart';
-import 'package:south24/presentation/resources/strings_mangaer.dart';
-import 'package:south24/presentation/resources/styles_manager.dart';
 import 'package:south24/presentation/resources/values_manager.dart';
 
 class GridViewSection extends StatelessWidget {

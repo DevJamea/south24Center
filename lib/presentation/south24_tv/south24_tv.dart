@@ -1,4 +1,5 @@
 import 'package:easy_localization/easy_localization.dart';
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:south24/app/provider_controller.dart';
@@ -20,6 +21,7 @@ class South24TV extends StatefulWidget {
 class _South24TVState extends State<South24TV> {
   late Key _playerKey;
   late final Controller provider;
+  final FirebaseAnalytics analytics = FirebaseAnalytics.instance;
 
   @override
   void initState() {
@@ -39,6 +41,8 @@ class _South24TVState extends State<South24TV> {
 
   @override
   Widget build(BuildContext context) {
+        analytics.setCurrentScreen(screenName: 'South TV');
+
     final size = MediaQuery.of(context).size;
     return Consumer<Controller>(builder: (context, Provider, child) {
       final youtubePlayerController = provider.youtubePlayerController;
@@ -79,6 +83,7 @@ class _South24TVState extends State<South24TV> {
             Expanded(
               child: ListView.builder(
                 itemCount: provider.youtube!.length,
+                addAutomaticKeepAlives: false,
                 padding: const EdgeInsets.symmetric(vertical: AppPadding.p8),
                 itemBuilder: (context, index) {
                   final youtubeModel = provider.youtube![index];

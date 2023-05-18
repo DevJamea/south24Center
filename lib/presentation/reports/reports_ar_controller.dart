@@ -2,8 +2,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:south24/app/provider_controller.dart';
-import 'package:south24/presentation/common/state_renderer.dart';
-import 'package:south24/presentation/common/state_renderer_impl.dart';
+import 'package:south24/presentation/reports/history_and_culture.dart';
 import 'package:south24/presentation/reports/arabic.dart';
 import 'package:south24/presentation/reports/dialogues.dart';
 import 'package:south24/presentation/reports/editorial.dart';
@@ -13,16 +12,15 @@ import 'package:south24/presentation/resources/color_manager.dart';
 import 'package:south24/presentation/resources/font_manager.dart';
 import 'package:south24/presentation/resources/strings_mangaer.dart';
 import 'package:south24/presentation/resources/values_manager.dart';
-import 'package:south24/presentation/widgets/news_widget_horizantal.dart';
 
-class ReportsView extends StatefulWidget {
-  const ReportsView({Key? key}) : super(key: key);
+class ReportsArControllerView extends StatefulWidget {
+  const ReportsArControllerView({Key? key}) : super(key: key);
 
   @override
-  State<ReportsView> createState() => _ReportsViewState();
+  State<ReportsArControllerView> createState() => _ReportsArControllerViewState();
 }
 
-class _ReportsViewState extends State<ReportsView>
+class _ReportsArControllerViewState extends State<ReportsArControllerView>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
   late final Controller provider;
@@ -30,17 +28,8 @@ class _ReportsViewState extends State<ReportsView>
   @override
   void initState() {
     super.initState();
-
     _tabController = TabController(length: tabs.length, vsync: this);
     provider = context.read<Controller>();
-
-    if (provider.reports == null && !provider.isArabic()) {
-      provider.getReportsNews();
-    } else {
-      if (provider.reports!.isEmpty && !provider.isArabic()) {
-        provider.getReportsNews();
-      }
-    }
   }
 
   @override
@@ -54,6 +43,7 @@ class _ReportsViewState extends State<ReportsView>
     AppStrings.specialReports,
     AppStrings.international,
     AppStrings.arabic,
+    AppStrings.historyAndCulture,
     AppStrings.dialogues,
   ];
 
@@ -62,44 +52,6 @@ class _ReportsViewState extends State<ReportsView>
     var size = MediaQuery.of(context).size;
     return Consumer<Controller>(builder: (context, provider, child) {
       _tabController.animateTo(provider.curretnReportsTab);
-
-      if (!provider.isArabic()) {
-        if (!provider.isConnected) {
-          return NoConnectionState(
-                  StateRendererType.fullScreenNoConnectionState,
-                  AppStrings.noInternetConnection.tr())
-              .getScreenWidget(context);
-        }
-
-        if (provider.reports == null) {
-          return ErrorState(
-              stateRendererType: StateRendererType.fullScreenErorr,
-              retryActionFunction: () {
-                provider.reports = [];
-                provider.notifyListeners();
-                provider.getReportsNews();
-              }).getScreenWidget(context);
-        }
-
-        if (provider.reports!.isEmpty) {
-          return LoadingState(
-                  stateRendererType: StateRendererType.fullScreenLoadingState)
-              .getScreenWidget(context);
-        }
-
-        return Scaffold(
-          body: ListView.builder(
-            itemCount: provider.reports!.length,
-            padding: const EdgeInsets.symmetric(vertical: AppPadding.p8),
-            itemBuilder: (context, index) {
-              return NewsWidgetHorizontal(
-                size: size,
-                news: provider.reports![index],
-              );
-            },
-          ),
-        );
-      }
       return _ReportsArabicTabController(
           tabs: tabs, size: size, tabController: _tabController);
     });
@@ -178,6 +130,8 @@ class _ReportsArabicTabController extends StatelessWidget {
           return const InternationalView();
         } else if (index == 3) {
           return const ArabicView();
+        } else if (index == 4) {
+          return const HistoryAndCultureView();
         } else {
           return const DialoguesView();
         }

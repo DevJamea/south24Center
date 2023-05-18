@@ -1,17 +1,11 @@
-import 'package:easy_localization/easy_localization.dart';
-import 'package:flutter/material.dart';
-import 'package:south24/app/provider_controller.dart';
-import 'package:south24/presentation/common/state_renderer.dart';
-import 'package:south24/presentation/resources/strings_mangaer.dart';
-
-import '../presentation/common/state_renderer_impl.dart';
-
 class Constants {
   //arabic version
   static String analyticsAr = "https://south24.net/news/json/14.json";
   static String editorial = "https://south24.net/news/json/2.json";
   static String specialReports = "https://south24.net/news/json/3.json";
   static String international = "https://south24.net/news/json/4.json";
+  static String historyAndCultureAr = "https://south24.net/news/json/24.json";
+  static String universityResearchAr = "https://south24.net/news/json/23.json";
   static String arabic = "https://south24.net/news/json/5.json";
   static String dialogues = "https://south24.net/news/json/7.json";
   static String stdudies = "https://south24.net/news/json/11.json";
@@ -20,6 +14,7 @@ class Constants {
   static String southTv = "https://south24.net/news/json/ytube.json";
   static String twitterAr = "https://south24.net/news/json/1_twt.json";
   static String about = "https://south24.net/news/json/16.json";
+  static String sliderAr = "https://south24.net/news/json/slide1.json";
   //arabic engilsh
   static String analyticsEn = "https://south24.net/news/json/15.json";
   static String reports = "https://south24.net/news/json/6.json";
@@ -27,6 +22,11 @@ class Constants {
   static String infographicEn = "https://south24.net/news/json/20.json";
   static String quarterly = "https://south24.net/news/json/22.json";
   static String twitterEn = "https://south24.net/news/json/2_twt.json";
+  static String historyAndCultureEn = "https://south24.net/news/json/26.json";
+  static String universityResearchEn = "https://south24.net/news/json/25.json";
+  static String sliderEn = "https://south24.net/news/json/slide2.json";
+
+
   static const String empty = "";
 
   static const String search = "https://south24.net/news/json/search.php?q=";

@@ -1,4 +1,5 @@
 import 'package:easy_localization/easy_localization.dart';
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:south24/app/provider_controller.dart';
@@ -19,6 +20,7 @@ class South24QuarterlyView extends StatefulWidget {
 
 class _South24QuarterlyViewState extends State<South24QuarterlyView> {
   late final Controller provider;
+  final FirebaseAnalytics analytics = FirebaseAnalytics.instance;
 
   @override
   void initState() {
@@ -37,6 +39,8 @@ class _South24QuarterlyViewState extends State<South24QuarterlyView> {
 
   @override
   Widget build(BuildContext context) {
+        analytics.setCurrentScreen(screenName: 'South24 Quartrly');
+
     final size = MediaQuery.of(context).size;
     final isPortrait = size.height > size.width;
     final textStyle = getMediumStyle(color: ColorManager.black);
@@ -70,6 +74,7 @@ class _South24QuarterlyViewState extends State<South24QuarterlyView> {
             body: Padding(
           padding: const EdgeInsets.symmetric(horizontal: AppPadding.p12),
           child: GridView.builder(
+            addAutomaticKeepAlives: false,
             gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisCount: isPortrait ? 1 : 2,
               crossAxisSpacing: AppSize.s12,

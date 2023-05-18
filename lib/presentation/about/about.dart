@@ -1,4 +1,5 @@
 import 'package:easy_localization/easy_localization.dart';
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:south24/app/provider_controller.dart';
@@ -20,6 +21,7 @@ class AboutView extends StatefulWidget {
 
 class _AboutViewState extends State<AboutView> {
   late final Controller provider;
+  final FirebaseAnalytics analytics = FirebaseAnalytics.instance;
 
   @override
   void initState() {
@@ -38,6 +40,7 @@ class _AboutViewState extends State<AboutView> {
 
   @override
   Widget build(BuildContext context) {
+    analytics.setCurrentScreen(screenName: 'About');
     return Consumer<Controller>(
       builder: (context, provider, child) {
         

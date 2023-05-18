@@ -1,5 +1,6 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:south24/app/app_prefs.dart';
 import 'package:south24/app/provider_controller.dart';
@@ -30,8 +31,12 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+      DeviceOrientation.portraitDown,
+    ]);
     return MultiProvider(
-     providers: [
+      providers: [
         ChangeNotifierProvider(create: (_) => Controller()..startMonitoring()),
       ],
       child: MaterialApp(

@@ -1,4 +1,5 @@
 import 'package:easy_localization/easy_localization.dart';
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:south24/app/provider_controller.dart';
@@ -17,6 +18,7 @@ class DialoguesView extends StatefulWidget {
 
 class _DialoguesViewState extends State<DialoguesView> {
   late final Controller provider;
+  final FirebaseAnalytics analytics = FirebaseAnalytics.instance;
 
   @override
   void initState() {
@@ -35,6 +37,8 @@ class _DialoguesViewState extends State<DialoguesView> {
 
   @override
   Widget build(BuildContext context) {
+        analytics.setCurrentScreen(screenName: 'Dialogus');
+
     var size = MediaQuery.of(context).size;
     return Consumer<Controller>(builder: (context, provider, child) {
      
@@ -64,6 +68,7 @@ class _DialoguesViewState extends State<DialoguesView> {
       return Scaffold(
         body: ListView.builder(
           itemCount: provider.dialogues!.length,
+          addAutomaticKeepAlives: false,
           padding: const EdgeInsets.symmetric(vertical: AppPadding.p8),
           itemBuilder: (context, index) {
             return NewsWidgetHorizontal(

@@ -1,4 +1,5 @@
 import 'package:easy_localization/easy_localization.dart';
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:south24/app/provider_controller.dart';
@@ -19,6 +20,7 @@ class BreakingNewsView extends StatefulWidget {
 class _BreakingNewsViewState extends State<BreakingNewsView> {
   final twitterAr = "https://twitter.com/South24_net/status";
   final twitterEn = "https://twitter.com/South24E/status";
+  final FirebaseAnalytics analytics = FirebaseAnalytics.instance;
 
   @override
   void initState() {
@@ -33,6 +35,8 @@ class _BreakingNewsViewState extends State<BreakingNewsView> {
 
   @override
   Widget build(BuildContext context) {
+    analytics.setCurrentScreen(screenName: 'Twitter');
+
     return Consumer<Controller>(
       builder: (context, provider, child) {
        
@@ -55,6 +59,7 @@ class _BreakingNewsViewState extends State<BreakingNewsView> {
           ).getScreenWidget(context)
         : ListView.builder(
             itemCount: provider.twitter.length,
+            addAutomaticKeepAlives: false,
             itemBuilder: (BuildContext context, int index) {
               return InkWell(
                 onTap: () {

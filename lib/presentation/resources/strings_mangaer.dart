@@ -14,6 +14,9 @@ class AppStrings {
   static const international = "international";
   static const arabic = "arabic";
   static const dialogues = "dialogues";
+  static const historyAndCulture = "historyAndCulture";
+  static const research = "research";
+  static const studiesAndResearch = "studiesAndResearch";
   static const infographics = "infographics";
   static const studies = "studies";
   static const breaking = "breaking";

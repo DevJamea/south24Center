@@ -44,6 +44,7 @@ class LatestReleaseSection extends StatelessWidget {
           height: size.height * AppSize.s_3,
           child: ListView.builder(
             scrollDirection: Axis.horizontal,
+            addAutomaticKeepAlives: false,
             itemCount: 4,
             itemBuilder: (context, index) {
               return InkWell(

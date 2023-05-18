@@ -1,4 +1,5 @@
 import 'package:easy_localization/easy_localization.dart';
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:south24/app/provider_controller.dart';
@@ -8,15 +9,16 @@ import 'package:south24/presentation/resources/strings_mangaer.dart';
 import 'package:south24/presentation/resources/values_manager.dart';
 import 'package:south24/presentation/widgets/news_widget_horizantal.dart';
 
-class AnalyticsView extends StatefulWidget {
-  const AnalyticsView({super.key});
+class AnalyticsEnView extends StatefulWidget {
+  const AnalyticsEnView({super.key});
 
   @override
-  State<AnalyticsView> createState() => _AnalyticsViewState();
+  State<AnalyticsEnView> createState() => _AnalyticsEnViewState();
 }
 
-class _AnalyticsViewState extends State<AnalyticsView> {
+class _AnalyticsEnViewState extends State<AnalyticsEnView> {
   late final Controller provider;
+  final FirebaseAnalytics analytics = FirebaseAnalytics.instance;
 
   @override
   void initState() {
@@ -25,20 +27,17 @@ class _AnalyticsViewState extends State<AnalyticsView> {
     provider = context.read<Controller>();
 
     if (provider.analytics == null) {
-      provider.isArabic()
-          ? provider.getAnalyticsArNews()
-          : provider.getAnalyticsEnNews();
+      provider.getAnalyticsEnNews();
     } else {
       if (provider.analytics!.isEmpty) {
-        provider.isArabic()
-            ? provider.getAnalyticsArNews()
-            : provider.getAnalyticsEnNews();
+        provider.getAnalyticsEnNews();
       }
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    analytics.setCurrentScreen(screenName: 'AnaluticsEn');
     var size = MediaQuery.of(context).size;
     return Consumer<Controller>(builder: (context, provider, child) {
       
@@ -54,9 +53,7 @@ class _AnalyticsViewState extends State<AnalyticsView> {
             retryActionFunction: () {
               provider.analytics = [];
               provider.notifyListeners();
-              provider.isArabic()
-                  ? provider.getAnalyticsArNews()
-                  : provider.getAnalyticsEnNews();
+              provider.getAnalyticsEnNews();
             }).getScreenWidget(context);
       }
 
@@ -69,6 +66,7 @@ class _AnalyticsViewState extends State<AnalyticsView> {
       return Scaffold(
         body: ListView.builder(
           itemCount: provider.analytics!.length,
+          addAutomaticKeepAlives: false,
           padding: const EdgeInsets.symmetric(vertical: AppPadding.p8),
           itemBuilder: (context, index) {
             return NewsWidgetHorizontal(

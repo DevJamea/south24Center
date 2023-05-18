@@ -1,4 +1,5 @@
 import 'package:easy_localization/easy_localization.dart';
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:south24/app/provider_controller.dart';
@@ -19,6 +20,7 @@ class InfographicsView extends StatefulWidget {
 
 class _InfographicsViewState extends State<InfographicsView> {
   late final Controller provider;
+  final FirebaseAnalytics analytics = FirebaseAnalytics.instance;
 
   @override
   void initState() {
@@ -41,6 +43,8 @@ class _InfographicsViewState extends State<InfographicsView> {
 
   @override
   Widget build(BuildContext context) {
+        analytics.setCurrentScreen(screenName: 'Infographics');
+
     final Size screenSize = MediaQuery.of(context).size;
     final bool isPortrait = screenSize.height > screenSize.width;
     final TextStyle textStyle = getMediumStyle(color: ColorManager.black);
@@ -74,6 +78,7 @@ class _InfographicsViewState extends State<InfographicsView> {
         body: Padding(
           padding: const EdgeInsets.symmetric(horizontal: AppPadding.p12),
           child: GridView.builder(
+            addAutomaticKeepAlives: false,
             gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisCount: isPortrait ? 1 : 2,
               crossAxisSpacing: AppSize.s12,

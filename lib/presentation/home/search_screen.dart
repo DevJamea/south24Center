@@ -1,4 +1,5 @@
 import 'package:easy_localization/easy_localization.dart';
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:south24/app/provider_controller.dart';
@@ -17,7 +18,10 @@ class SearchScreen extends StatefulWidget {
   _SearchScreenState createState() => _SearchScreenState();
 }
 
-class _SearchScreenState extends State<SearchScreen> {
+class _SearchScreenState extends State<SearchScreen> {  
+  final FirebaseAnalytics analytics = FirebaseAnalytics.instance;
+
+
   @override
   void deactivate() {
     super.deactivate();
@@ -28,6 +32,8 @@ class _SearchScreenState extends State<SearchScreen> {
 
   @override
   Widget build(BuildContext context) {
+        analytics.setCurrentScreen(screenName: 'Search');
+
     var size = MediaQuery.of(context).size;
     return Consumer<Controller>(
       builder: (context, provider, child) {
@@ -58,34 +64,33 @@ class _SearchScreenState extends State<SearchScreen> {
   }
 
   Widget _buildSearchResults(Size size, Controller provider) {
-
     if (!provider.isConnected) {
-        return NoConnectionState(StateRendererType.fullScreenNoConnectionState,
-                  AppStrings.noInternetConnection.tr())
-              .getScreenWidget(context);
-      }
+      return NoConnectionState(StateRendererType.fullScreenNoConnectionState,
+              AppStrings.noInternetConnection.tr())
+          .getScreenWidget(context);
+    }
 
     if (provider.searchList == null) {
       return LoadingState(
         stateRendererType: StateRendererType.fullScreenLoadingState,
       ).getScreenWidget(context);
-    } 
-    
+    }
+
     if (provider.searchList!.isEmpty) {
       return NoDataState(
         stateRendererType: StateRendererType.fullScreenNoDataState,
       ).getScreenWidget(context);
-    } 
-
-      return ListView.builder(
-        itemCount: provider.searchList!.length,
-        itemBuilder: (context, index) {
-          return SearchNewsWidget(
-            size: size,
-            news: provider.searchList![index],
-          );
-        },
-      );
     }
-    
+
+    return ListView.builder(
+      itemCount: provider.searchList!.length,
+      addAutomaticKeepAlives: false,
+      itemBuilder: (context, index) {
+        return SearchNewsWidget(
+          size: size,
+          news: provider.searchList![index],
+        );
+      },
+    );
+  }
 }

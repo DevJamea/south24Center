@@ -43,7 +43,7 @@ class Controller extends ChangeNotifier {
     AppStrings.analytics,
     AppStrings.reports,
     AppStrings.breakingNews,
-    AppStrings.studies,
+    AppStrings.studiesAndResearch,
     AppStrings.publications,
     AppStrings.south24TV,
     AppStrings.about,
@@ -62,12 +62,15 @@ class Controller extends ChangeNotifier {
     AppStrings.language,
   ];
 
-  List<String> EnTopicId = ["6", "15", "24", "25"];
+  List<String> EnTopicId = ["6", "15", "18", "20", "22", "25", "26"];
 
+  List<NewsJson>? slider = [];
   List<NewsJson>? analytics = [];
   List<NewsJson>? editorial = [];
   List<NewsJson>? specialReports = [];
   List<NewsJson>? international = [];
+  List<NewsJson>? historyAndCulture = [];
+  List<NewsJson>? universityResearch = [];
   List<NewsJson>? arabic = [];
   List<NewsJson>? dialogues = [];
   List<NewsJson>? stdudies = [];
@@ -183,15 +186,15 @@ class Controller extends ChangeNotifier {
     notifyListeners();
   }
 
-  getSliderImageAr() {
-    getAnalyticsArNews();
-    notifyListeners();
-  }
-
   /// arabic
 
   getAnalyticsArNews() async {
     analytics = await base(Constants.analyticsAr);
+    notifyListeners();
+  }
+
+  getSliderArNews() async {
+    slider = await base(Constants.sliderAr);
     notifyListeners();
   }
 
@@ -207,6 +210,26 @@ class Controller extends ChangeNotifier {
 
   getInternationalNews() async {
     international = await base(Constants.international);
+    notifyListeners();
+  }
+
+  getHistoryAndCultureArNews() async {
+    historyAndCulture = await base(Constants.historyAndCultureAr);
+    notifyListeners();
+  }
+
+  getHistoryAndCultureEnNews() async {
+    historyAndCulture = await base(Constants.historyAndCultureEn);
+    notifyListeners();
+  }
+
+  getUniversityResearchArNews() async {
+    universityResearch = await base(Constants.universityResearchAr);
+    notifyListeners();
+  }
+
+  getUniversityResearchEnNews() async {
+    universityResearch = await base(Constants.universityResearchEn);
     notifyListeners();
   }
 
@@ -238,6 +261,12 @@ class Controller extends ChangeNotifier {
   }
 
   /// engilsh
+
+  getSliderEnNews() async {
+    slider = await base(Constants.sliderEn);
+    notifyListeners();
+  }
+
   getAnalyticsEnNews() async {
     analytics = await base(Constants.analyticsEn);
     notifyListeners();
@@ -319,9 +348,11 @@ class Controller extends ChangeNotifier {
 
   void animateToReportsPage(int index) {
     curretnReportsTab = index;
-    reporstPageController.animateToPage(index,
-        duration: const Duration(milliseconds: 200),
-        curve: Curves.easeInOutSine);
+    if (reporstPageController.hasClients) {
+      reporstPageController.animateToPage(index,
+          duration: const Duration(milliseconds: 200),
+          curve: Curves.easeInOutSine);
+    }
     notifyListeners();
   }
 
@@ -396,7 +427,7 @@ class Controller extends ChangeNotifier {
     );
   }
 
-   String formatDate(String dateStr , String language) {
+  String formatDate(String dateStr, String language) {
     String weekday = DateFormat('E').format(DateTime.parse(dateStr));
     String day = dateStr.substring(8, 10);
     String month = dateStr.substring(5, 7);

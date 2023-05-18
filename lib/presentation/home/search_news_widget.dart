@@ -29,11 +29,19 @@ class SearchNewsWidget extends StatelessWidget {
           : UI.TextDirection.rtl,
       child: InkWell(
         onTap: () {
-          Navigator.pushNamed(
-            context,
-            Routes.SearchedNewsDetails,
-            arguments: news.newsId,
-          );
+          if (news.newsTopicid == "16") {
+            Navigator.pushNamed(
+              context,
+              Routes.SearchedMemberDetails,
+              arguments: news.newsId,
+            );
+          } else {
+            Navigator.pushNamed(
+              context,
+              Routes.SearchedNewsDetails,
+              arguments: news.newsId,
+            );
+          }
         },
         child: Padding(
           padding: const EdgeInsets.symmetric(
@@ -52,6 +60,8 @@ class SearchNewsWidget extends StatelessWidget {
                         ? size.height * AppSize.s_15
                         : size.width * AppSize.s_20,
                     fit: BoxFit.cover,
+                    maxWidthDiskCache: 400,
+                    maxHeightDiskCache: 280,
                     imageUrl: news.newsPic!,
                     placeholder: (context, url) =>
                         SvgPicture.asset(ImageAssets.imagePhaceholder),

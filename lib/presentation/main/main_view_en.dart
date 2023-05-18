@@ -1,7 +1,6 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 import 'package:south24/app/provider_controller.dart';
 import 'package:south24/presentation/common/state_renderer.dart';
@@ -12,11 +11,7 @@ import 'package:south24/presentation/main/image_slider.dart';
 import 'package:south24/presentation/main/latest_release_section.dart';
 import 'package:south24/presentation/main/list_view_section.dart';
 import 'package:south24/presentation/main/name_section.dart';
-import 'package:south24/presentation/resources/assets_manager.dart';
-import 'package:south24/presentation/resources/color_manager.dart';
-import 'package:south24/presentation/resources/routs_manager.dart';
 import 'package:south24/presentation/resources/strings_mangaer.dart';
-import 'package:south24/presentation/resources/styles_manager.dart';
 import 'package:south24/presentation/resources/values_manager.dart';
 
 class MianViewEn extends StatefulWidget {
@@ -30,6 +25,7 @@ class MianViewEn extends StatefulWidget {
 
 class _MianStateEn extends State<MianViewEn> {
   late final Controller provider;
+  final FirebaseAnalytics analytics = FirebaseAnalytics.instance;
 
   _getInitData(List<dynamic>? list, Function getData) {
     if (list == null) {
@@ -45,6 +41,7 @@ class _MianStateEn extends State<MianViewEn> {
     super.initState();
     provider = context.read<Controller>();
 
+    _getInitData(provider.slider, provider.getSliderEnNews);
     _getInitData(provider.analytics, provider.getAnalyticsEnNews);
     _getInitData(provider.reports, provider.getReportsNews);
     _getInitData(provider.publications, provider.getPublicationsNews);
@@ -52,6 +49,8 @@ class _MianStateEn extends State<MianViewEn> {
 
   @override
   Widget build(BuildContext context) {
+        analytics.setCurrentScreen(screenName: 'MainEn');
+
     var size = MediaQuery.of(context).size;
     return Consumer<Controller>(builder: (context, provider, child) {
       if (!provider.isConnected) {
@@ -67,11 +66,11 @@ class _MianStateEn extends State<MianViewEn> {
             //image Silder section
             ImageSlider(
               size: size,
-              newsList: provider.analytics,
+              newsList: provider.slider,
               retryButtonFunction: () {
-                provider.analytics = [];
+                provider.slider = [];
                 provider.notifyListeners();
-                provider.getAnalyticsEnNews();
+                provider.getSliderEnNews();
               },
             ),
             const SizedBox(
@@ -136,7 +135,7 @@ class _MianStateEn extends State<MianViewEn> {
               size: size,
               latestReleaseList: provider.publications,
               retryButtonFunction: () {
-                 provider.publications = [];
+                provider.publications = [];
                 provider.notifyListeners();
                 provider.getPublicationsNews();
               },

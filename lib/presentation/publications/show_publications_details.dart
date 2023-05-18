@@ -2,7 +2,6 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 import 'package:south24/app/provider_controller.dart';
 import 'package:south24/domain/modela/arabic_versions.dart';
@@ -139,7 +138,8 @@ class _ShowPublicationsDetailsState extends State<ShowPublicationsDetails> {
   }
 
   Widget _buildPublicationButtons(Controller provider) {
-    return Padding(
+    return Container(
+      width: double.infinity,
       padding: const EdgeInsets.symmetric(
           horizontal: AppPadding.p16, vertical: AppPadding.p8),
       child: ElevatedButton(

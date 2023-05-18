@@ -1,4 +1,5 @@
 import 'package:easy_localization/easy_localization.dart';
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:south24/app/provider_controller.dart';
@@ -19,6 +20,7 @@ class SubPublicationsView extends StatefulWidget {
 
 class _SubPublicationsViewState extends State<SubPublicationsView> {
   late final Controller provider;
+  final FirebaseAnalytics analytics = FirebaseAnalytics.instance;
 
   @override
   void initState() {
@@ -47,6 +49,8 @@ class _SubPublicationsViewState extends State<SubPublicationsView> {
 
   @override
   Widget build(BuildContext context) {
+        analytics.setCurrentScreen(screenName: 'Publications');
+
     final size = MediaQuery.of(context).size;
     final isPortrait = size.height > size.width;
     final textStyle = getMediumStyle(color: ColorManager.black);
@@ -98,6 +102,7 @@ class _SubPublicationsViewState extends State<SubPublicationsView> {
           body: Padding(
             padding: const EdgeInsets.symmetric(horizontal: AppPadding.p12),
             child: GridView.builder(
+              addAutomaticKeepAlives: false,
               gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: isPortrait ? 1 : 2,
                 crossAxisSpacing: AppSize.s12,
