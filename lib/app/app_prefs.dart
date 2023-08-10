@@ -4,7 +4,6 @@ import 'package:south24/presentation/resources/language_manager.dart';
 
 const String PREFS_KEY_LANG = "PREFS_KEY_LANG";
 
-
 class AppPreferences {
   final SharedPreferences _sharedPreferences;
 
@@ -34,6 +33,11 @@ class AppPreferences {
     }
   }
 
+  Future<void> changeAppLanguageToSpecific(String language) async {
+    _sharedPreferences.setString(
+        PREFS_KEY_LANG,language);
+  }
+
   Future<Locale> getLocal() async {
     String currentLang = await getAppLanguage();
 
@@ -43,7 +47,4 @@ class AppPreferences {
       return ENGLISH_LOCAL;
     }
   }
-
-
- 
 }

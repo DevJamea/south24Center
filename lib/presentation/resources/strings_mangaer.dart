@@ -1,3 +1,4 @@
+
 class AppStrings {
   static const noRouteFound = "noRouteFound";
   static const home = "home";
@@ -63,7 +64,6 @@ class AppStrings {
   static const email2 = "southarbia24@gmail.com";
   static const website = "South24.net";
 
-
   static const days = "days";
   static const hours = "hours";
   static const minutes = "minutes";
@@ -81,5 +81,14 @@ class AppStrings {
   static const retry = "retry";
   static const somtingWrong = "somtingWrong";
 
+  static const partenters = "partenters";
 
+  static const centerSections = "centerSections";
+  static const south24English = "south24English";
+  static const south24Arabic = "south24Arabic";
+  static const arabicBreakingNewsService = "arabicBreakingNewsService";
+  static const englishBreakingNewsService = "englishBreakingNewsService";
+  static const south24Channel = "south24Channel";
+  static const contactUs = "contactUs";
+  static const socialMedia = "socialMedia";
 }

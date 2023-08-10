@@ -163,7 +163,7 @@ class _SearchedMemberDetailsState extends State<SearchedMemberDetails> {
                             'span': _getHTMLStyle(),
                             'font': _getHTMLStyle()
                           },
-                          onLinkTap: (url, context, attributes, element) {
+                           onLinkTap: (url, context, attributes, element) {
                             launchUrl(Uri.parse(url!),
                                 mode: LaunchMode.externalApplication);
                           },

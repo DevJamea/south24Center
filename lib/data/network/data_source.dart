@@ -27,7 +27,7 @@ class DataSource {
   DataSource._();
   static DataSource instance = DataSource._();
 
-  Future<List<NewsJson>?> fetchNewsData(String url) async {
+  Future<List<NewsJson>?> fetchNewsData(String url, {Function? onError}) async {
     final response = await http.get(Uri.parse(url));
     if (response.statusCode == 200) {
       final encodedBody = utf8.decode(response.bodyBytes);
@@ -39,6 +39,24 @@ class DataSource {
         return newsList;
       }
     } else {
+      onError?.call();
+      return null;
+    }
+  }
+
+  Future<List<NewsJson>?> fetchAboutData(String url, {Function? onError}) async {
+    final response = await http.get(Uri.parse(url));
+    if (response.statusCode == 200) {
+      final encodedBody = utf8.decode(response.bodyBytes);
+      final jsonData = json.decode(encodedBody) as List<dynamic>;
+      final newsList = jsonData.map((data) => NewsJson.fromJsonWithoutSubstring(data)).toList();
+      if (newsList.isEmpty) {
+        return null;
+      } else {
+        return newsList;
+      }
+    } else {
+      onError?.call();
       return null;
     }
   }
@@ -127,7 +145,7 @@ class DataSource {
     }
   }
 
-  Future<List<TwitterModel>> fetchTwitterData(String url) async {
+  Future<List<TwitterModel>?> fetchTwitterData(String url) async {
     final response = await http.get(Uri.parse(url));
 
     if (response.statusCode == 200) {
@@ -135,9 +153,13 @@ class DataSource {
       final jsonData = json.decode(encodedBody) as List<dynamic>;
       final twitterModelList =
           jsonData.map((data) => TwitterModel.fromJson(data)).toList();
-      return twitterModelList;
+      if (twitterModelList.isEmpty) {
+        return null;
+      } else {
+        return twitterModelList;
+      }
     } else {
-      throw Exception('Failed to load data');
+      return null;
     }
   }
 }

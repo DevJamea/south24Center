@@ -1,7 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:html/parser.dart' as html;
+import 'package:html_unescape/html_unescape_small.dart';
 import 'package:south24/domain/modela/news_model.dart';
 import 'package:south24/presentation/resources/assets_manager.dart';
 import 'package:south24/presentation/resources/color_manager.dart';
@@ -20,6 +20,47 @@ class NewsWidgetHorizontal extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final textTheme = Theme.of(context).textTheme;
+    final double maxTextWidth = size.width * 0.8;
+
+    final subjectTextSpan = TextSpan(
+      text: HtmlUnescape().convert(news.newsSubject!.trim()),
+      style: TextStyle(
+        fontSize: FontSizeManager.s14,
+        color: ColorManager.black,
+        fontFamily: FontConstants.fontFamily,
+        fontWeight: FontWeight.bold,
+      ),
+    );
+
+    final subjectTextPainter = TextPainter(
+      text: subjectTextSpan,
+      maxLines: 3,
+      textDirection: TextDirection.ltr,
+    );
+    subjectTextPainter.layout(maxWidth: maxTextWidth);
+    final subjectTextHeight = subjectTextPainter.height;
+
+    final bodyTextSpan = TextSpan(
+      text: HtmlUnescape().convert(news.newsBudy!.trim()),
+      style: TextStyle(
+        fontSize: FontSizeManager.s12,
+        color: ColorManager.grey,
+        fontFamily: FontConstants.fontFamily,
+        fontWeight: FontWeightManager.light,
+      ),
+    );
+
+    final bodyTextPainter = TextPainter(
+      text: bodyTextSpan,
+      maxLines: null,
+      textDirection: TextDirection.ltr,
+    );
+    bodyTextPainter.layout(maxWidth: maxTextWidth);
+    final bodyTextHeight = bodyTextPainter.height;
+
+    final widgetHeight = subjectTextHeight + bodyTextHeight;
+
     return InkWell(
       onTap: () {
         Navigator.pushNamed(
@@ -62,36 +103,19 @@ class NewsWidgetHorizontal extends StatelessWidget {
                   horizontal: AppPadding.p8,
                 ),
                 child: SizedBox(
-                  height: size.height > size.width
-                      ? size.height * AppSize.s_15
-                      : size.width * AppSize.s_20,
+                  height: widgetHeight,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text(
-                        news.newsSubject!.trim(),
+                      RichText(
                         maxLines: 3,
                         overflow: TextOverflow.fade,
-                        style: TextStyle(
-                          fontSize: FontSizeManager.s12,
-                          color: ColorManager.black,
-                          fontFamily: FontConstants.fontFamily,
-                          fontWeight: FontWeight.bold,
-                        ),
+                        text: subjectTextSpan,
                       ),
                       Expanded(
-                        child: Text(
-                          html
-                              .parse(news.newsBudy!.trim())
-                              .documentElement!
-                              .text,
-                          style: TextStyle(
-                            fontSize: FontSizeManager.s12,
-                            color: ColorManager.grey,
-                            fontFamily: FontConstants.fontFamily,
-                            fontWeight: FontWeightManager.light,
-                          ),
+                        child: RichText(
+                          text: bodyTextSpan,
                         ),
                       ),
                     ],

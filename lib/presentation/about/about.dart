@@ -3,8 +3,10 @@ import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:south24/app/provider_controller.dart';
+import 'package:south24/presentation/about/center_sections.dart';
 import 'package:south24/presentation/about/first_section.dart';
 import 'package:south24/presentation/about/last_section.dart';
+import 'package:south24/presentation/about/partenters.dart';
 import 'package:south24/presentation/about/section_name.dart';
 import 'package:south24/presentation/common/state_renderer.dart';
 import 'package:south24/presentation/common/state_renderer_impl.dart';
@@ -43,7 +45,6 @@ class _AboutViewState extends State<AboutView> {
     analytics.setCurrentScreen(screenName: 'About');
     return Consumer<Controller>(
       builder: (context, provider, child) {
-        
         if (!provider.isConnected) {
           return NoConnectionState(
                   StateRendererType.fullScreenNoConnectionState,
@@ -96,8 +97,11 @@ class _AboutViewState extends State<AboutView> {
                   sectionName: AppStrings.researchersAndExperts.tr(),
                   tag: "5",
                 ),
+                PartentersSection(),
                 const Divider(),
                 const LastSection(),
+                const Divider(),
+                CenterSections(),
                 const FooterView(),
               ],
             ),

@@ -1,3 +1,5 @@
+import 'package:html/parser.dart' as html;
+
 class NewsJson {
   String? newsId;
   String? newsSubject;
@@ -27,6 +29,33 @@ class NewsJson {
       required this.newsDatetime});
 
   NewsJson.fromJson(Map<String, dynamic> json) {
+    newsId = json['news_id'] ?? "";
+    newsSubject = json['news_subject'] ?? "";
+    newsEsubject = json['news_esubject'] ?? "";
+    try {
+      newsBudy = html
+          .parse(json['news_budy'] ?? "")
+          .documentElement!
+          .text
+          .substring(0, 200);
+    } catch (e) {
+      newsBudy = json['news_budy'] ?? "";
+    }
+    newsEbudy = json['news_ebudy'] ?? "";
+    newsTopicid = json['news_topicid'] ?? "";
+    // Convert relative image URL to absolute URL
+    final baseUrl = 'https://south24.net/news/';
+    final imagePath = json['news_pic'].replaceAll('../', '');
+    final absoluteUrl = Uri.parse(baseUrl).resolve(imagePath).toString();
+    newsPic = absoluteUrl;
+    newsPictitle = json['news_pictitle'] ?? "";
+    newsAuth = json['news_auth'] ?? "";
+    newsRef = json['news_ref'] ?? "";
+    newsTags = json['news_tags'] ?? "";
+    newsDatetime = json['news_datetime'] ?? "";
+  }
+
+  NewsJson.fromJsonWithoutSubstring(Map<String, dynamic> json) {
     newsId = json['news_id'] ?? "";
     newsSubject = json['news_subject'] ?? "";
     newsEsubject = json['news_esubject'] ?? "";

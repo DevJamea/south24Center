@@ -39,10 +39,16 @@ class _HomeViewState extends State<HomeView>
     super.initState();
     final provider = Provider.of<Controller>(context, listen: false);
     _tabController = TabController(length: provider.tabsAr.length, vsync: this);
-    if (!provider.isArabic()) {
-      provider.twitter.isEmpty ? provider.getTwitterEnNews() : null;
+    if (provider.twitter == null) {
+      provider.isArabic()
+          ? provider.getTwitterArNews()
+          : provider.getTwitterEnNews();
     } else {
-      provider.twitter.isEmpty ? provider.getTwitterArNews() : null;
+      if (provider.infographic!.isEmpty) {
+        provider.isArabic()
+            ? provider.getTwitterArNews()
+            : provider.getTwitterEnNews();
+      }
     }
   }
 
@@ -111,9 +117,10 @@ class _HomeViewState extends State<HomeView>
             ),
             bottomNavigationBar: !provider.isConnected
                 ? null
-                : provider.checkTwittersNullable(context)
+                : provider.checkTwittersNullable(context) == null
                     ? null
-                    : SouthBottomAppBar(size: size),
+                    : provider.twitter!.where((tweet) => tweet.hours! < 2).isNotEmpty ?
+                    SouthBottomAppBar(size: size): null,
             body: WillPopScope(
               onWillPop: () async {
                 if (provider.curretnTab == 0) {

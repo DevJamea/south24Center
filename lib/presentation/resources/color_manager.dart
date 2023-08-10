@@ -20,5 +20,5 @@ class ColorManager {
   static Color twitterColor = Color(0xff1f9bef);
   static Color whatsappColor = Color(0xff4bc85a);
   static Color telegramColor = Color(0xff1595d5);
-  
+  static Color gray50 = Color.fromARGB(50, 115, 116, 119);
 }

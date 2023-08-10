@@ -16,7 +16,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
 # In Windows, build-name is used as the major, minor, and patch parts
 # of the product and file versions while build-number is used as the build suffix.
-version: 1.0.0+1
+version: 1.0.4+5
 
 environment:
   sdk: '>=2.19.3 <3.0.0'
@@ -46,27 +46,29 @@ dependencies:
   shared_preferences: ^2.0.20
   get_it: ^7.2.0
   marquee: ^2.2.3
-  webfeed: ^0.7.0
-  http: ^0.13.5
+  
   internet_connection_checker: ^1.0.0+1
   provider: ^6.0.5
   xml: ^5.4.1
-  connectivity_plus: ^2.1.0
+  connectivity_plus: ^4.0.1
   flutter_native_splash: ^2.2.0+1
-  flutter_html: ^2.0.0
-  flutter_svg: ^0.23.0+1
   html: ^0.15.2
   path_provider: ^2.0.14
   youtube_player_flutter: ^8.1.2
   dio: ^5.1.1
-  flutter_launcher_icons: ^0.11.0
-  flutter_widget_from_html_core: ^0.10.0
   firebase_core: ^2.13.0
   firebase_analytics: ^10.4.1
   firebase_crashlytics: ^3.3.1
-  
-  
-  
+  firebase_messaging: ^14.6.4
+  flutter_svg: ^0.23.0+1
+  flutter_local_notifications: ^8.2.0
+  http: ^0.13.6
+  flutter_html: ^2.1.1
+  social_embed_webview: ^0.3.2
+  webview_flutter: ^2.8.0
+  flutter_widget_from_html: ^0.9.1
+  html_unescape: ^2.0.0
+  google_fonts: ^4.0.4
 
 dev_dependencies:
   flutter_test:
@@ -103,6 +105,7 @@ flutter:
   assets:
     - assets/images/splash_logo.png
     - assets/images/imagePlaceholder.svg
+    - assets/images/imagePlaceholderPng.png
     - assets/images/app_icon.png
     - assets/json/twitter_logo.json
     - assets/json/loading.json
@@ -117,6 +120,9 @@ flutter:
     - assets/images/whatsapp_icon.svg
     - assets/images/telegram_icon.svg
     - assets/images/email_icon.svg
+    - assets/images/almarfacenter.png
+    - assets/images/hjfyemen.png
+    - assets/images/peacetrackinitiative.png
     
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware

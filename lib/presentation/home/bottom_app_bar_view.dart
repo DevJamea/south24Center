@@ -50,7 +50,7 @@ class SouthBottomAppBar extends StatelessWidget {
                         autoPlayCurve: Curves.easeInOutExpo,
                         autoPlay: true,
                         viewportFraction: 1),
-                      items: provider.twitter.where((tweet) => tweet.hours! < 2).map((tweet) {
+                      items: provider.twitter!.where((tweet) => tweet.hours! < 2).map((tweet) {
                         return Text(
                           tweet.twtTxt!,
                           style: Theme.of(context).textTheme.bodyLarge,

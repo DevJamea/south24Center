@@ -2,6 +2,7 @@ import 'dart:ui' as UI;
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_html/flutter_html.dart';
+import 'package:html_unescape/html_unescape_small.dart';
 import 'package:provider/provider.dart';
 import 'package:south24/app/provider_controller.dart';
 import 'package:south24/presentation/common/state_renderer.dart';
@@ -125,8 +126,8 @@ class _TranslatedNewsDetailsViewState extends State<TranslatedNewsDetailsView> {
                         top: AppPadding.p8,
                       ),
                       child: Html(
-                        data: provider.translatedNews!.newsBudy!.trim(),
-                        onLinkTap: (url, context, attributes, element) =>
+                        data: HtmlUnescape().convert(provider.translatedNews!.newsBudy!.trim()),
+                        onLinkTap:(url, context, attributes, element) =>
                             launchUrl(Uri.parse(url!),
                                 mode: LaunchMode.externalApplication),
                         style: {
@@ -140,7 +141,7 @@ class _TranslatedNewsDetailsViewState extends State<TranslatedNewsDetailsView> {
                     ),
                     Html(
                       data: provider.translatedNews!.newsAuth!.trim(),
-                      onLinkTap: (url, context, attributes, element) =>
+                      onLinkTap:(url, context, attributes, element) =>
                           launchUrl(Uri.parse(url!),
                               mode: LaunchMode.externalApplication),
                       style: {
@@ -156,7 +157,7 @@ class _TranslatedNewsDetailsViewState extends State<TranslatedNewsDetailsView> {
                     ),
                     Html(
                       data: provider.translatedNews!.newsRef!.trim(),
-                      onLinkTap: (url, context, attributes, element) =>
+                      onLinkTap:(url, context, attributes, element) =>
                           launchUrl(Uri.parse(url!),
                               mode: LaunchMode.externalApplication),
                       style: {

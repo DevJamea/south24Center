@@ -1,6 +1,8 @@
+import 'dart:developer';
 import 'dart:io';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_phoenix/flutter_phoenix.dart';
 import 'package:south24/app/app_prefs.dart';
@@ -31,12 +33,21 @@ class Controller extends ChangeNotifier {
   String? selectedYoutube;
   String? pdfFilePath;
 
+  TranslatedNews? newsDetails;
   TranslatedNews? searchedNews;
   TranslatedNews? translateNews;
   TranslatedNews? translatedNews;
   static GlobalKey<NavigatorState> navKey = GlobalKey();
 
-  Controller() {}
+  Controller() {
+    getFcmToken();
+  }
+
+  Future<void> getFcmToken() async {
+    // Get the FCM token
+    String? fcmToken = await FirebaseMessaging.instance.getToken();
+    log('FCM Token: $fcmToken');
+  }
 
   List<String> tabsAr = [
     AppStrings.home,
@@ -85,7 +96,7 @@ class Controller extends ChangeNotifier {
   List<Infographics>? infographic = [];
   List<YoutubeModel>? youtube = [];
 
-  List<TwitterModel> twitter = [];
+  List<TwitterModel>? twitter = [];
 
   // return tabs list based language
 
@@ -148,13 +159,22 @@ class Controller extends ChangeNotifier {
     Phoenix.rebirth(context);
   }
 
+  changeLanguageToSpecific(BuildContext context, String language) {
+    _appPreferences.changeAppLanguageToSpecific(language);
+    Phoenix.rebirth(context);
+  }
+
   // check list
 
-  bool checkTwittersNullable(BuildContext context) {
-    if (twitter.where((tweet) => tweet.hours! < 2).isEmpty) {
-      return true;
+  bool? checkTwittersNullable(BuildContext context) {
+    if (twitter != null) {
+      if (twitter!.where((tweet) => tweet.hours! < 2).isEmpty) {
+        return true;
+      } else {
+        return null;
+      }
     } else {
-      return false;
+      return null;
     }
   }
 
@@ -167,8 +187,10 @@ class Controller extends ChangeNotifier {
   searchData(String query) async {
     String url = Constants.search + query;
     searchList = null;
+
     notifyListeners();
     searchList = await DataSource.instance.fetchSearchData(url);
+
     notifyListeners();
   }
 
@@ -183,6 +205,13 @@ class Controller extends ChangeNotifier {
     translatedNews = null;
     String url = Constants.getNewsDetails + id;
     translatedNews = await DataSource.instance.fetchNewsById(url);
+    notifyListeners();
+  }
+
+  getNewsDetails(String id) async {
+    newsDetails = null;
+    String url = Constants.getNewsDetails + id;
+    newsDetails = await DataSource.instance.fetchNewsById(url);
     notifyListeners();
   }
 
@@ -324,7 +353,7 @@ class Controller extends ChangeNotifier {
   }
 
   getMembers() async {
-    about = await base(Constants.about);
+    about = await DataSource.instance.fetchAboutData(Constants.about);
     notifyListeners();
   }
 

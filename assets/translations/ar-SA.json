@@ -71,5 +71,17 @@
     "searchWord":"بحث",
  
     "retry" :  "إعادة المحاولة",
-    "somtingWrong" : "فشل في استرجاع البيانات"
+    "somtingWrong" : "فشل في استرجاع البيانات",
+
+    "partenters" : "الشركاء",
+
+    "centerSections" : "أقسام المركز",
+
+    "south24English" : "سوث24 بالعربية",
+    "south24Arabic": "سوث24 بالإنجليزية",
+    "arabicBreakingNewsService": "خدمة الأخبار العاجلة بالعربية",
+    "englishBreakingNewsService": "خدمة الأخبار العاجلة بالإنجليزية",
+    "south24Channel": "قناة سوث24",
+    "contactUs": "تواصل معنا",
+    "socialMedia":"تابعنا على مواقع التواصل الإجتماعي"
 }

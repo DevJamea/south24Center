@@ -1,7 +1,10 @@
+import 'dart:convert';
+import 'dart:developer';
 import 'dart:ui' as UI;
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_html/flutter_html.dart';
+import 'package:html_unescape/html_unescape_small.dart';
 import 'package:provider/provider.dart';
 import 'package:south24/app/provider_controller.dart';
 import 'package:south24/presentation/common/state_renderer.dart';
@@ -16,6 +19,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:south24/presentation/resources/assets_manager.dart';
 import 'package:south24/presentation/resources/values_manager.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:webview_flutter/webview_flutter.dart';
 
 class SearchedNewsDetails extends StatefulWidget {
   final String Newsid;
@@ -157,14 +161,15 @@ class _SearchedNewsDetailsState extends State<SearchedNewsDetails> {
                             top: AppPadding.p8,
                           ),
                           child: Html(
-                            data: provider.searchedNews!.newsBudy!.trim(),
+                            data: HtmlUnescape().convert(
+                                provider.searchedNews!.newsBudy!.trim()),
                             onLinkTap: (url, context, attributes, element) =>
                                 launchUrl(Uri.parse(url!),
                                     mode: LaunchMode.externalApplication),
                             style: {
                               'html': Style(
                                   color: ColorManager.black,
-                                  fontSize: FontSize(FontSizeManager.s14),
+                                  fontSize: FontSize(FontSizeManager.s12),
                                   fontFamily: FontConstants.fontFamily,
                                   textAlign: TextAlign.justify),
                             },
@@ -209,6 +214,19 @@ class _SearchedNewsDetailsState extends State<SearchedNewsDetails> {
         ),
       );
     });
+  }
+
+  String convertToSecondCode(String firstCode) {
+    String modifiedCode = firstCode.replaceAll(
+      '<blockquote',
+      '<div> <iframe  scrolling="no" frameborder="0"  allowfullscreen="true" sandbox = "" src=\'<blockquote ',
+    );
+
+    modifiedCode = modifiedCode.replaceAll('</blockquote>',
+        '</blockquote>\'></iframe> </div> <iframe src="https://twitter.com/hus_yaghi/status/1686812603853705216" > </iframe>');
+
+    log(modifiedCode);
+    return modifiedCode;
   }
 
   String formatDate(String dateStr) {

@@ -2,7 +2,7 @@
     "noRouteFound": "noRouteFound",
     "home": "Home",
     "analytics": "Analytics",
-    "reports": "Rreports",
+    "reports": "Reports",
     "breakingNews": "Breaking News",
     "publications": "Publications",
     "south24TV": "South24 TV",
@@ -71,7 +71,19 @@
     "searchWord":"search",
  
     "retry" :  "Retry",
-    "somtingWrong" : "Failed to fetch data"
+    "somtingWrong" : "Failed to fetch data",
+
+    "partenters" : "Partenters",
+
+    "centerSections" : "Center sections",
+
+    "south24English" : "South24 English",
+    "south24Arabic": "South24 Arabic",
+    "arabicBreakingNewsService": "Arabic breaking news service",
+    "englishBreakingNewsService": "English breaking news service",
+    "south24Channel": "South24 channel",
+    "contactUs" : "Contact Us",
+    "socialMedia":"Social Media"
  
   }
   

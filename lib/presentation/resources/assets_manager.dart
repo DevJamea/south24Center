@@ -4,6 +4,7 @@ const String jsonPath = "assets/json";
 class ImageAssets {
   static const String splashLogo = '$imagePath/splash_logo.png';
   static const String imagePhaceholder = '$imagePath/imagePlaceholder.svg';
+  static const String imagePhaceholderPng = '$imagePath/imagePlaceholderPng.png';
   static const String appIcon = '$imagePath/app_icon.png';
   static const String facebookIcon = '$imagePath/facebook_icon.svg';
   static const String twitterIcon = '$imagePath/twitter_icon.svg';
@@ -11,6 +12,9 @@ class ImageAssets {
   static const String whatsappIcon = '$imagePath/whatsapp_icon.svg';
   static const String telegramIcon = '$imagePath/telegram_icon.svg';
   static const String emailIcon = '$imagePath/email_icon.svg';
+  static const String almarfacenter = '$imagePath/almarfacenter.png';
+  static const String hjfyemen = '$imagePath/hjfyemen.png';
+  static const String peacetrackinitiative = '$imagePath/peacetrackinitiative.png';
 }
 
 class JsonAssets {

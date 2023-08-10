@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_html/flutter_html.dart';
+import 'package:html_unescape/html_unescape_small.dart';
 import 'package:provider/provider.dart';
 import 'package:south24/app/provider_controller.dart';
 import 'package:south24/domain/modela/news_model.dart';
@@ -31,6 +32,7 @@ class _NewsDetailsViewState extends State<NewsDetailsView> {
   void initState() {
     super.initState();
     final provider = Provider.of<Controller>(context, listen: false);
+    provider.getNewsDetails(widget.news.newsId!);
     provider.getNewsTranslate(widget.news.newsId!);
   }
 
@@ -53,7 +55,7 @@ class _NewsDetailsViewState extends State<NewsDetailsView> {
         );
       }
 
-      if (provider.translateNews == null) {
+      if (provider.translateNews == null || provider.newsDetails == null) {
         return Scaffold(
           appBar: AppBar(
               primary: true,
@@ -84,7 +86,7 @@ class _NewsDetailsViewState extends State<NewsDetailsView> {
                       : size.width * AppSize.s_5,
                   width: double.infinity,
                   fit: BoxFit.cover,
-                  imageUrl: widget.news.newsPic!.trim(),
+                  imageUrl: provider.newsDetails!.newsPic!.trim(),
                   placeholder: (context, url) =>
                       SvgPicture.asset(ImageAssets.imagePhaceholder),
                   errorWidget: (context, url, error) =>
@@ -96,7 +98,7 @@ class _NewsDetailsViewState extends State<NewsDetailsView> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        widget.news.newsSubject!.trim(),
+                        provider.newsDetails!.newsSubject!.trim(),
                         style: Theme.of(context).textTheme.bodyMedium,
                       ),
                       Row(
@@ -110,14 +112,14 @@ class _NewsDetailsViewState extends State<NewsDetailsView> {
                             width: AppSize.s4,
                           ),
                           Text(
-                            formatDate(widget.news.newsDatetime!),
+                            formatDate(provider.newsDetails!.newsDatetime!),
                             style:
                                 getMediumStyle(color: ColorManager.lightBlack),
                           ),
                         ],
                       ),
                       SocialMediaIcons(
-                        newsId: widget.news.newsId,
+                        newsId: provider.newsDetails!.newsId,
                         text: provider
                             .checkTranslatedNews(provider.translateNews!),
                         transletedNewsId: provider.TranslatedNewsId(),
@@ -127,7 +129,7 @@ class _NewsDetailsViewState extends State<NewsDetailsView> {
                           top: AppPadding.p8,
                         ),
                         child: Html(
-                          data: widget.news.newsBudy!.trim(),
+                          data: HtmlUnescape().convert(provider.newsDetails!.newsBudy!.trim()),
                           onLinkTap: (url, context, attributes, element) =>
                               launchUrl(Uri.parse(url!),
                                   mode: LaunchMode.externalApplication),
@@ -141,7 +143,7 @@ class _NewsDetailsViewState extends State<NewsDetailsView> {
                         ),
                       ),
                       Html(
-                        data: widget.news.newsAuth!.trim(),
+                        data: provider.newsDetails!.newsAuth!.trim(),
                         onLinkTap: (url, context, attributes, element) =>
                             launchUrl(Uri.parse(url!),
                                 mode: LaunchMode.externalApplication),
@@ -157,7 +159,7 @@ class _NewsDetailsViewState extends State<NewsDetailsView> {
                         height: AppSize.s12,
                       ),
                       Html(
-                        data: widget.news.newsRef!.trim(),
+                        data: provider.newsDetails!.newsRef!.trim(),
                         onLinkTap: (url, context, attributes, element) =>
                             launchUrl(Uri.parse(url!),
                                 mode: LaunchMode.externalApplication),

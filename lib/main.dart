@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_phoenix/flutter_phoenix.dart';
 import 'package:south24/app/app.dart';
 import 'package:south24/app/di.dart';
+import 'package:south24/notification/fcm_helper.dart';
+import 'package:south24/notification/notification_helper.dart';
 import 'package:south24/presentation/resources/language_manager.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
@@ -15,10 +17,13 @@ void main() async {
   );
   FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterFatalError;
   await EasyLocalization.ensureInitialized();
+  await FcmHelper.fcmHelper.configureFcm();
+  NotHelper.notHelper.configureNotification();
   await initAppModule();
   runApp(EasyLocalization(
       child: Phoenix(
-        child: MyApp(),),
+        child: MyApp(),
+      ),
       supportedLocales: const [ARABIC_LOCAL, ENGLISH_LOCAL],
       path: ASSET_PATH_LOCALISATIONS));
 }
