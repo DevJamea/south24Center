@@ -65,6 +65,6 @@ class DefaultFirebaseOptions {
     storageBucket: 'south24-a4113.appspot.com',
     iosClientId:
         '967115994589-8ni180067mp1f1rqbeqv903q4rh03iam.apps.googleusercontent.com',
-    iosBundleId: 'net.south24.news',
+    iosBundleId: 'net.south24center.news',
   );
 }
