@@ -63,7 +63,8 @@ class DefaultFirebaseOptions {
     messagingSenderId: '967115994589',
     projectId: 'south24-a4113',
     storageBucket: 'south24-a4113.appspot.com',
-    iosClientId: '967115994589-8ni180067mp1f1rqbeqv903q4rh03iam.apps.googleusercontent.com',
-    iosBundleId: 'com.south24.center',
+    iosClientId:
+        '967115994589-8ni180067mp1f1rqbeqv903q4rh03iam.apps.googleusercontent.com',
+    iosBundleId: 'net.south24.news',
   );
 }
