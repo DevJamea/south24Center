@@ -43,7 +43,7 @@ class _InfographicsViewState extends State<InfographicsView> {
 
   @override
   Widget build(BuildContext context) {
-        analytics.setCurrentScreen(screenName: 'Infographics');
+        analytics.logScreenView(screenName: 'Infographics');
 
     final Size screenSize = MediaQuery.of(context).size;
     final bool isPortrait = screenSize.height > screenSize.width;

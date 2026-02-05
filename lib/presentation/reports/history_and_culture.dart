@@ -41,7 +41,7 @@ class _HistoryAndCultureViewState extends State<HistoryAndCultureView> {
 
   @override
   Widget build(BuildContext context) {
-        analytics.setCurrentScreen(screenName: 'History And Culture');
+        analytics.logScreenView(screenName: 'History And Culture');
 
     var size = MediaQuery.of(context).size;
     return Consumer<Controller>(builder: (context, provider, child) {

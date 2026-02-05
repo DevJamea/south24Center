@@ -1,45 +1,49 @@
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 class NotHelper {
-  static NotHelper notHelper = NotHelper();
+  static final NotHelper notHelper = NotHelper();
 
-  late FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin;
+  final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+  FlutterLocalNotificationsPlugin();
 
-  configureNotification() {
-    // Create an instance of the FlutterLocalNotificationsPlugin
-    flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
+  Future<void> configureNotification() async {
+    const AndroidInitializationSettings androidInit =
+    AndroidInitializationSettings('app_icon');
 
-    // Request permissions for Android
-    const AndroidInitializationSettings initializationSettingsAndroid =
-        AndroidInitializationSettings('app_icon');
-    final InitializationSettings initializationSettings = InitializationSettings(
-      android: initializationSettingsAndroid,
-      iOS: null, // No iOS initialization settings needed for version 8.2.0
+    const InitializationSettings initSettings =
+    InitializationSettings(android: androidInit);
+
+    await flutterLocalNotificationsPlugin.initialize(
+      settings: initSettings,
+      onDidReceiveNotificationResponse: (NotificationResponse response) async {
+        // handle tap
+        final payload = response.payload;
+        // TODO: navigate / do action based on payload
+      },
+      // لو بدك تعامل مع ضغط الإشعار والاب مغلق (اختياري):
+      // onDidReceiveBackgroundNotificationResponse: notificationTapBackground,
     );
-    flutterLocalNotificationsPlugin.initialize(initializationSettings);
-
-    // If you want to handle notification callbacks when the app is in the foreground,
-    // uncomment the following line
-    // flutterLocalNotificationsPlugin.initialize(initializationSettings, onSelectNotification: yourCallbackMethod);
   }
 
   Future<void> showNotification(String title, String body) async {
-    const AndroidNotificationDetails androidNotificationDetails =
-        AndroidNotificationDetails('1', // channel ID
-      'Notification', // channel name
-      'News Notification',
+    const AndroidNotificationDetails androidDetails = AndroidNotificationDetails(
+      '1',
+      'Notification',
+      channelDescription: 'News Notification',
       importance: Importance.max,
       priority: Priority.high,
-      ticker: 'ticker',);
+    );
 
-    const NotificationDetails platformChannelSpecifics =
-        NotificationDetails(android: androidNotificationDetails);
+    const NotificationDetails details = NotificationDetails(
+      android: androidDetails,
+    );
 
     await flutterLocalNotificationsPlugin.show(
-      1, // notification ID
-      title,
-      body,
-      platformChannelSpecifics,
+      id: 1,
+      title: title,
+      body: body,
+      notificationDetails: details,
+      // payload: 'any', // اختياري
     );
   }
 }

@@ -37,7 +37,7 @@ class _ArabicViewState extends State<ArabicView> {
 
   @override
   Widget build(BuildContext context) {
-        analytics.setCurrentScreen(screenName: 'Aabic');
+        analytics.logScreenView(screenName: 'Aabic');
 
     var size = MediaQuery.of(context).size;
     return Consumer<Controller>(builder: (context, provider, child) {

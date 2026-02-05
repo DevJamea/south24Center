@@ -32,7 +32,7 @@ class _SearchScreenState extends State<SearchScreen> {
 
   @override
   Widget build(BuildContext context) {
-        analytics.setCurrentScreen(screenName: 'Search');
+        analytics.logScreenView(screenName: 'Search');
 
     var size = MediaQuery.of(context).size;
     return Consumer<Controller>(

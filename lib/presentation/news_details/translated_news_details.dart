@@ -127,7 +127,7 @@ class _TranslatedNewsDetailsViewState extends State<TranslatedNewsDetailsView> {
                       ),
                       child: Html(
                         data: HtmlUnescape().convert(provider.translatedNews!.newsBudy!.trim()),
-                        onLinkTap:(url, context, attributes, element) =>
+                        onLinkTap:(url, attributes, element) =>
                             launchUrl(Uri.parse(url!),
                                 mode: LaunchMode.externalApplication),
                         style: {
@@ -141,7 +141,7 @@ class _TranslatedNewsDetailsViewState extends State<TranslatedNewsDetailsView> {
                     ),
                     Html(
                       data: provider.translatedNews!.newsAuth!.trim(),
-                      onLinkTap:(url, context, attributes, element) =>
+                      onLinkTap:(url, attributes, element) =>
                           launchUrl(Uri.parse(url!),
                               mode: LaunchMode.externalApplication),
                       style: {
@@ -157,7 +157,7 @@ class _TranslatedNewsDetailsViewState extends State<TranslatedNewsDetailsView> {
                     ),
                     Html(
                       data: provider.translatedNews!.newsRef!.trim(),
-                      onLinkTap:(url, context, attributes, element) =>
+                      onLinkTap:(url, attributes, element) =>
                           launchUrl(Uri.parse(url!),
                               mode: LaunchMode.externalApplication),
                       style: {

@@ -16,7 +16,7 @@ ThemeData getApplicationTheme() {
     scaffoldBackgroundColor: ColorManager.white,
 
     // cardview theme
-    cardTheme: CardTheme(
+    cardTheme: CardThemeData(
         color: ColorManager.white,
         shadowColor: ColorManager.grey,
         elevation: AppSize.s1),

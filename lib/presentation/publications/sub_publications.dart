@@ -49,7 +49,7 @@ class _SubPublicationsViewState extends State<SubPublicationsView> {
 
   @override
   Widget build(BuildContext context) {
-        analytics.setCurrentScreen(screenName: 'Publications');
+        analytics.logScreenView(screenName: 'Publications');
 
     final size = MediaQuery.of(context).size;
     final isPortrait = size.height > size.width;

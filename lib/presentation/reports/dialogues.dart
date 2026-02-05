@@ -37,7 +37,7 @@ class _DialoguesViewState extends State<DialoguesView> {
 
   @override
   Widget build(BuildContext context) {
-        analytics.setCurrentScreen(screenName: 'Dialogus');
+        analytics.logScreenView(screenName: 'Dialogus');
 
     var size = MediaQuery.of(context).size;
     return Consumer<Controller>(builder: (context, provider, child) {

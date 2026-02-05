@@ -60,7 +60,7 @@ class _HomeViewState extends State<HomeView>
 
   @override
   Widget build(BuildContext context) {
-    analytics.setCurrentScreen(screenName: 'Home');
+    analytics.logScreenView(screenName: 'Home');
 
     var size = MediaQuery.of(context).size;
     _tabController?.animateTo(Provider.of<Controller>(context).curretnTab);

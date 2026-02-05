@@ -41,7 +41,7 @@ class _South24TVState extends State<South24TV> {
 
   @override
   Widget build(BuildContext context) {
-        analytics.setCurrentScreen(screenName: 'South TV');
+        analytics.logScreenView(screenName: 'South TV');
 
     final size = MediaQuery.of(context).size;
     return Consumer<Controller>(builder: (context, Provider, child) {

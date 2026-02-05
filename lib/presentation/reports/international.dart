@@ -37,7 +37,7 @@ class _InternationalViewState extends State<InternationalView> {
 
   @override
   Widget build(BuildContext context) {
-        analytics.setCurrentScreen(screenName: 'Internaional');
+        analytics.logScreenView(screenName: 'Internaional');
 
     var size = MediaQuery.of(context).size;
     return Consumer<Controller>(builder: (context, provider, child) {

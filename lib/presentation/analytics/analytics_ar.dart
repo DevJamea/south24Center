@@ -37,7 +37,7 @@ class _AnalyticsArViewState extends State<AnalyticsArView> {
 
   @override
   Widget build(BuildContext context) {
-    analytics.setCurrentScreen(screenName: 'AnaluticsAr');
+    analytics.logScreenView(screenName: 'AnaluticsAr');
 
     var size = MediaQuery.of(context).size;
     return Consumer<Controller>(builder: (context, provider, child) {

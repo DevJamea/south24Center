@@ -130,7 +130,7 @@ class _NewsDetailsViewState extends State<NewsDetailsView> {
                         ),
                         child: Html(
                           data: HtmlUnescape().convert(provider.newsDetails!.newsBudy!.trim()),
-                          onLinkTap: (url, context, attributes, element) =>
+                          onLinkTap: (url, attributes, element) =>
                               launchUrl(Uri.parse(url!),
                                   mode: LaunchMode.externalApplication),
                           style: {
@@ -144,7 +144,7 @@ class _NewsDetailsViewState extends State<NewsDetailsView> {
                       ),
                       Html(
                         data: provider.newsDetails!.newsAuth!.trim(),
-                        onLinkTap: (url, context, attributes, element) =>
+                        onLinkTap: (url, attributes, element) =>
                             launchUrl(Uri.parse(url!),
                                 mode: LaunchMode.externalApplication),
                         style: {
@@ -160,7 +160,7 @@ class _NewsDetailsViewState extends State<NewsDetailsView> {
                       ),
                       Html(
                         data: provider.newsDetails!.newsRef!.trim(),
-                        onLinkTap: (url, context, attributes, element) =>
+                        onLinkTap: (url, attributes, element) =>
                             launchUrl(Uri.parse(url!),
                                 mode: LaunchMode.externalApplication),
                         style: {

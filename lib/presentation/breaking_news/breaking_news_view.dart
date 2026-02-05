@@ -28,7 +28,7 @@ class _BreakingNewsViewState extends State<BreakingNewsView> {
 
   @override
   Widget build(BuildContext context) {
-    analytics.setCurrentScreen(screenName: 'Twitter');
+    analytics.logScreenView(screenName: 'Twitter');
 
     return Consumer<Controller>(builder: (context, provider, child) {
       return Scaffold(

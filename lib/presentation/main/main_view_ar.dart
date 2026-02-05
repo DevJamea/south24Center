@@ -56,7 +56,7 @@ class _MianStateAr extends State<MianViewAr> {
 
   @override
   Widget build(BuildContext context) {
-        analytics.setCurrentScreen(screenName: 'MainAr');
+        analytics.logScreenView(screenName: 'MainAr');
 
     var size = MediaQuery.of(context).size;
     return Consumer<Controller>(builder: (context, provider, child) {

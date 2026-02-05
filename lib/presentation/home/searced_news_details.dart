@@ -163,7 +163,7 @@ class _SearchedNewsDetailsState extends State<SearchedNewsDetails> {
                           child: Html(
                             data: HtmlUnescape().convert(
                                 provider.searchedNews!.newsBudy!.trim()),
-                            onLinkTap: (url, context, attributes, element) =>
+                            onLinkTap: (url, attributes, element) =>
                                 launchUrl(Uri.parse(url!),
                                     mode: LaunchMode.externalApplication),
                             style: {
@@ -177,7 +177,7 @@ class _SearchedNewsDetailsState extends State<SearchedNewsDetails> {
                         ),
                         Html(
                           data: provider.searchedNews!.newsAuth!.trim(),
-                          onLinkTap: (url, context, attributes, element) =>
+                          onLinkTap: (url, attributes, element) =>
                               launchUrl(Uri.parse(url!),
                                   mode: LaunchMode.externalApplication),
                           style: {
@@ -193,7 +193,7 @@ class _SearchedNewsDetailsState extends State<SearchedNewsDetails> {
                         ),
                         Html(
                           data: provider.searchedNews!.newsRef!.trim(),
-                          onLinkTap: (url, context, attributes, element) =>
+                          onLinkTap: (url, attributes, element) =>
                               launchUrl(Uri.parse(url!),
                                   mode: LaunchMode.externalApplication),
                           style: {

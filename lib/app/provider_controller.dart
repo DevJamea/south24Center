@@ -112,40 +112,43 @@ class Controller extends ChangeNotifier {
 // check internet
 
   bool _isConnected = true;
-
   bool get isConnected => _isConnected;
 
   void startMonitoring() async {
-    final ConnectivityResult result = await Connectivity().checkConnectivity();
-    if (result == ConnectivityResult.none) {
+    // ✅ checkConnectivity الآن يرجّع List<ConnectivityResult>
+    final List<ConnectivityResult> results =
+    await Connectivity().checkConnectivity();
+
+    final bool offline = results.contains(ConnectivityResult.none);
+
+    if (offline) {
       _isConnected = false;
     } else {
-      final bool hasInternet = await _checkInternetConnectivity();
-      _isConnected = hasInternet;
+      _isConnected = await _checkInternetConnectivity();
     }
+    notifyListeners();
 
-    Connectivity()
-        .onConnectivityChanged
-        .listen((ConnectivityResult result) async {
-      if (result == ConnectivityResult.none) {
-        _isConnected = false;
-      } else {
-        final bool hasInternet = await _checkInternetConnectivity();
-        _isConnected = hasInternet;
-      }
-      notifyListeners();
-    });
+    Connectivity().onConnectivityChanged.listen(
+          (List<ConnectivityResult> results) async {
+        final bool offline = results.contains(ConnectivityResult.none);
+
+        if (offline) {
+          _isConnected = false;
+        } else {
+          _isConnected = await _checkInternetConnectivity();
+        }
+
+        notifyListeners();
+      },
+    );
   }
 
+  // ✅ لازم تكون خارج startMonitoring
   Future<bool> _checkInternetConnectivity() async {
     try {
       final result = await InternetAddress.lookup('google.com');
-      if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
-        return true;
-      } else {
-        return false;
-      }
-    } catch (e) {
+      return result.isNotEmpty && result[0].rawAddress.isNotEmpty;
+    } catch (_) {
       return false;
     }
   }

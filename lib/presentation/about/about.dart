@@ -42,7 +42,7 @@ class _AboutViewState extends State<AboutView> {
 
   @override
   Widget build(BuildContext context) {
-    analytics.setCurrentScreen(screenName: 'About');
+    analytics.logScreenView(screenName: 'About');
     return Consumer<Controller>(
       builder: (context, provider, child) {
         if (!provider.isConnected) {

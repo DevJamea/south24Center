@@ -36,7 +36,7 @@ class _SpecialReportsViewState extends State<SpecialReportsView> {
 
   @override
   Widget build(BuildContext context) {
-        analytics.setCurrentScreen(screenName: 'Special Reports');
+        analytics.logScreenView(screenName: 'Special Reports');
 
     final Size size = MediaQuery.of(context).size;
     return Consumer<Controller>(

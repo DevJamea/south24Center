@@ -36,7 +36,7 @@ class _StudiesViewState extends State<StudiesView> {
 
   @override
   Widget build(BuildContext context) {
-    analytics.setCurrentScreen(screenName: 'Studies');
+    analytics.logScreenView(screenName: 'Studies');
 
     var size = MediaQuery.of(context).size;
     return Consumer<Controller>(

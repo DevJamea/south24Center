@@ -38,7 +38,7 @@ class _EditorialViewState extends State<EditorialView> {
 
   @override
   Widget build(BuildContext context) {
-        analytics.setCurrentScreen(screenName: 'Editotrial');
+        analytics.logScreenView(screenName: 'Editotrial');
 
     var size = MediaQuery.of(context).size;
     return Consumer<Controller>(builder: (context, provider, child) {

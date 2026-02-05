@@ -39,7 +39,7 @@ class _South24QuarterlyViewState extends State<South24QuarterlyView> {
 
   @override
   Widget build(BuildContext context) {
-        analytics.setCurrentScreen(screenName: 'South24 Quartrly');
+        analytics.logScreenView(screenName: 'South24 Quartrly');
 
     final size = MediaQuery.of(context).size;
     final isPortrait = size.height > size.width;
