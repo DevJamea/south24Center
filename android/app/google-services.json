@@ -1,36 +1,26 @@
 {
   "project_info": {
-    "project_number": "967115994589",
-    "project_id": "south24-a4113",
-    "storage_bucket": "south24-a4113.appspot.com"
+    "project_number": "965588439078",
+    "project_id": "south24-center",
+    "storage_bucket": "south24-center.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:967115994589:android:88a02cc719c3970c4a7234",
+        "mobilesdk_app_id": "1:965588439078:android:d7c1bb4ddd97f7a81696e7",
         "android_client_info": {
           "package_name": "net.south24center.news"
         }
       },
-      "oauth_client": [
-        {
-          "client_id": "967115994589-9jbqeft88jb20n19s8fb5q6ripqg3cvo.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
+      "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyC2SsUvnClsELxhR-_v3s90FuVD4vlgY0A"
+          "current_key": "AIzaSyAC7J_CL3fOWdvNhh3wTD57Mz_kqapsR-U"
         }
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": [
-            {
-              "client_id": "967115994589-9jbqeft88jb20n19s8fb5q6ripqg3cvo.apps.googleusercontent.com",
-              "client_type": 3
-            }
-          ]
+          "other_platform_oauth_client": []
         }
       }
     }

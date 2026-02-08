@@ -7,7 +7,9 @@ import 'package:south24/presentation/resources/values_manager.dart';
 
 ThemeData getApplicationTheme() {
   return ThemeData(
+    useMaterial3: false,
     // main colors
+    fontFamily: FontConstants.fontFamily,
     primaryColor: ColorManager.primary,
     primaryColorLight: ColorManager.lightPrimary,
     primaryColorDark: ColorManager.darkPrimary,

@@ -1,4 +1,4 @@
-package net.south24center.south24
+package net.south24center.news
 
 import io.flutter.embedding.android.FlutterActivity
 

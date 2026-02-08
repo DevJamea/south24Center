@@ -50,11 +50,11 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyC2SsUvnClsELxhR-_v3s90FuVD4vlgY0A',
-    appId: '1:967115994589:android:88a02cc719c3970c4a7234',
-    messagingSenderId: '967115994589',
-    projectId: 'south24-a4113',
-    storageBucket: 'south24-a4113.appspot.com',
+    apiKey: 'AIzaSyAC7J_CL3fOWdvNhh3wTD57Mz_kqapsR-U',
+    appId: '1:965588439078:android:d7c1bb4ddd97f7a81696e7',
+    messagingSenderId: '965588439078',
+    projectId: 'south24-center',
+    storageBucket: 'south24-center.firebasestorage.app',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
